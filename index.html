@@ -262,7 +262,8 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
   const projBadge = proj>=ann
     ? `<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`
     : `<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
-  const conv = leadA>0 ? (admA/leadA*100).toFixed(2)+'%' : '—';
+  const offA  = ytdAct('Offers');
+  const conv = offA>0 ? (admA/offA*100).toFixed(1)+'%' : '—';
   const appA  = ytdAct('Application');
   const submA = ytdAct('App Submits');
   const appConv = appA>0 ? (submA/appA*100).toFixed(1)+'%' : '—';
@@ -279,9 +280,9 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
       <div class="sub">of ${fmtN(leadT)} YTD target</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
-      <div class="lbl">Lead → Admit Conv</div>
+      <div class="lbl">Offer → Admit Conv</div>
       <div class="val">${conv}</div>
-      <div class="sub">overall conversion</div>
+      <div class="sub">${fmtN(admA)} of ${fmtN(offA)} offers</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
       <div class="lbl">App Started → Submit</div>
