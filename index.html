@@ -85,6 +85,14 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .chip-risk{ background: #fde8e8; color: #c0392b; }
 .chip-na  { background: #f0f0ec; color: #bbb; }
 
+/* ── PERF HEADLINE METRICS ── */
+.perf-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #f0f2f5; border-bottom: 1px solid #e4e8ee; }
+.perf-metric { background: #fff; padding: 12px 16px; }
+.perf-metric .pm-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #aaa; margin-bottom: 5px; }
+.perf-metric .pm-pct { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+.perf-metric .pm-abs { font-size: 11px; color: #888; margin-top: 4px; }
+.perf-metric .pm-tgt { font-size: 10px; color: #bbb; margin-top: 2px; }
+
 /* ── ALERTS ── */
 .alert-bar { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .alert-label { font-size: 11px; font-weight: 700; color: #1a2f55; margin-right: 4px; }
@@ -141,10 +149,18 @@ const ACT_CH = {
   'Admits':      [41,  29,  17, 28, 16, 22],
 };
 
-const CPL_T = [22,26,39,10,30,0];
-const CAC_T = [549,683,524,146,756,98];
-const CPL_A = [25,28,42,11,35,0];
+const CPL_T = [12, 26, 39, 10, 30, 0];
+const CAC_T = [1000,683,524,146,756,98];
+const CPL_A = [25, 28, 42, 11, 35, 0];
 const CAC_A = [600,720,560,155,820,105];
+
+// Perf-specific headline metrics
+const PERF = {
+  goodCountryTgt: 0.85,   // 85% of leads should be Good Country
+  goodCountryAct: 0.60,   // actual (derive from mix; replace with real number)
+  leadsToSubmitTgt: 0.08, // 8% leads → app submits
+  submitsToOffersTgt: 0.09, // 9% app submits → offers
+};
 
 /* ═══════════════ HELPERS ═══════════════════════════════ */
 function ytdAct(stage) {
@@ -360,6 +376,86 @@ function makeSVG(id, rows) {
     const admS  = statusOf(admA, admT);
     const admColor = barCol(admS);
 
+    // ── Perf headline metrics block ──────────────────────
+    let perfMetrics = '';
+    if (ci === 0) {
+      const submitsA = ACT_CH['App Submits'][0];
+      const offersA  = ACT_CH['Offers'][0];
+
+      // Good Country %
+      const gcAct    = leadA * PERF.goodCountryAct;
+      const gcActPct = Math.round(PERF.goodCountryAct * 100);
+      const gcTgtPct = Math.round(PERF.goodCountryTgt * 100);
+      const gcStatus = gcActPct >= gcTgtPct * 0.95 ? 'on' : gcActPct >= gcTgtPct * 0.80 ? 'beh' : 'risk';
+
+      // CPL status (lower = better)
+      const cplRatio  = CPL_T[0] > 0 ? CPL_A[0] / CPL_T[0] : 1;
+      const cplStatus = cplRatio <= 1.05 ? 'on' : cplRatio <= 1.20 ? 'beh' : 'risk';
+
+      // CAC status (lower = better)
+      const cacRatio  = CAC_T[0] > 0 ? CAC_A[0] / CAC_T[0] : 1;
+      const cacStatus = cacRatio <= 1.05 ? 'on' : cacRatio <= 1.20 ? 'beh' : 'risk';
+
+      // Leads → App Submits
+      const l2sAct    = leadA > 0 ? submitsA / leadA : 0;
+      const l2sActPct = (l2sAct * 100).toFixed(1);
+      const l2sTgtPct = (PERF.leadsToSubmitTgt * 100).toFixed(0);
+      const l2sAbsT   = Math.round(leadA * PERF.leadsToSubmitTgt);
+      const l2sStatus = l2sAct >= PERF.leadsToSubmitTgt * 0.95 ? 'on' : l2sAct >= PERF.leadsToSubmitTgt * 0.80 ? 'beh' : 'risk';
+
+      // App Submits → Offers
+      const s2oAct    = submitsA > 0 ? offersA / submitsA : 0;
+      const s2oActPct = (s2oAct * 100).toFixed(1);
+      const s2oTgtPct = (PERF.submitsToOffersTgt * 100).toFixed(0);
+      const s2oAbsT   = Math.round(submitsA * PERF.submitsToOffersTgt);
+      const s2oStatus = s2oAct >= PERF.submitsToOffersTgt * 0.95 ? 'on' : s2oAct >= PERF.submitsToOffersTgt * 0.80 ? 'beh' : 'risk';
+
+      const c = (s) => barCol(s);
+
+      // TOP: Good Country + CPL + CAC
+      perfMetrics = `<div class="perf-metrics">
+        <div class="perf-metric">
+          <div class="pm-label">Good Country Leads</div>
+          <div class="pm-pct" style="color:${c(gcStatus)}">${gcActPct}%</div>
+          <div class="pm-abs">${fmtN(Math.round(gcAct))} of ${fmtN(leadA)} leads</div>
+          <div class="pm-tgt">Target: ${gcTgtPct}% · ${fmtN(Math.round(leadA*PERF.goodCountryTgt))}</div>
+        </div>
+        <div class="perf-metric">
+          <div class="pm-label">CPL (USD)</div>
+          <div class="pm-pct" style="color:${c(cplStatus)}">${fmtU(CPL_A[0])}</div>
+          <div class="pm-abs">${Math.round(cplRatio*100)}% of target</div>
+          <div class="pm-tgt">Target: ${fmtU(CPL_T[0])}</div>
+        </div>
+        <div class="perf-metric">
+          <div class="pm-label">CAC (USD)</div>
+          <div class="pm-pct" style="color:${c(cacStatus)}">${fmtU(CAC_A[0])}</div>
+          <div class="pm-abs">${Math.round(cacRatio*100)}% of target</div>
+          <div class="pm-tgt">Target: ${fmtU(CAC_T[0])}</div>
+        </div>
+      </div>`;
+
+      // BOTTOM footer (replaces CPL/CAC): conversions
+      // injected via perfFooter variable below
+      window._perfFooter = `<div class="cost-row-ch" style="gap:16px">
+        <div class="cost-item">
+          <div class="lbl">Leads → App Submits</div>
+          <div class="vals">
+            <span class="actual" style="color:${c(l2sStatus)}">${l2sActPct}%</span>
+            <span class="target">(${fmtN(submitsA)} of ${fmtN(leadA)})</span>
+          </div>
+          <div style="font-size:10px;color:#bbb;margin-top:2px">Target: ${l2sTgtPct}% · ${fmtN(l2sAbsT)} expected</div>
+        </div>
+        <div class="cost-item">
+          <div class="lbl">App Submits → Offers</div>
+          <div class="vals">
+            <span class="actual" style="color:${c(s2oStatus)}">${s2oActPct}%</span>
+            <span class="target">(${fmtN(offersA)} of ${fmtN(submitsA)})</span>
+          </div>
+          <div style="font-size:10px;color:#bbb;margin-top:2px">Target: ${s2oTgtPct}% · ${fmtN(s2oAbsT)} expected</div>
+        </div>
+      </div>`;
+    }
+
     // stage rows
     let stageHtml = '';
     STAGES.forEach(st => {
@@ -375,9 +471,8 @@ function makeSVG(id, rows) {
     });
 
     // CPL / CAC
-    const cplS = CPL_T[ci]>0 ? statusOf(CPL_A[ci], CPL_T[ci]*1.05) : null; // cost: higher=worse, flip
-    const cacS = CAC_T[ci]>0 ? (CAC_A[ci]/CAC_T[ci]<=1.05?'on':CAC_A[ci]/CAC_T[ci]<=1.20?'beh':'risk') : null;
     const cplColor = barCol(CPL_T[ci]>0?(CPL_A[ci]/CPL_T[ci]<=1.05?'on':CPL_A[ci]/CPL_T[ci]<=1.20?'beh':'risk'):null);
+    const cacS = CAC_T[ci]>0 ? (CAC_A[ci]/CAC_T[ci]<=1.05?'on':CAC_A[ci]/CAC_T[ci]<=1.20?'beh':'risk') : null;
     const cacColor = barCol(cacS);
 
     html += `<div class="ch-card">
@@ -394,9 +489,12 @@ function makeSVG(id, rows) {
           </div>
         </div>
       </div>
+      ${perfMetrics}
       <div class="ch-card-body">
         ${stageHtml}
-        <div class="cost-row-ch">
+        ${ci === 0
+          ? (window._perfFooter || '')
+          : `<div class="cost-row-ch">
           <div class="cost-item">
             <div class="lbl">CPL (USD)</div>
             <div class="vals">
@@ -411,7 +509,7 @@ function makeSVG(id, rows) {
               <span class="target">/ ${fmtU(CAC_T[ci])}</span>
             </div>
           </div>
-        </div>
+        </div>`}
       </div>
     </div>`;
   });
