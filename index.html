@@ -19,7 +19,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .page { padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
 
 /* ── METRIC STRIP ── */
-.metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
 .metric-strip .divider { width: 1px; background: rgba(255,255,255,0.1); margin: 0 4px; }
 .metric-item { padding: 0 20px; }
 .metric-item:first-child { padding-left: 0; }
@@ -263,6 +263,9 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
     ? `<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`
     : `<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
   const conv = leadA>0 ? (admA/leadA*100).toFixed(2)+'%' : '—';
+  const appA  = ytdAct('Application');
+  const submA = ytdAct('App Submits');
+  const appConv = appA>0 ? (submA/appA*100).toFixed(1)+'%' : '—';
 
   document.getElementById('metric-strip').innerHTML = `
     <div class="metric-item">
@@ -279,6 +282,11 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
       <div class="lbl">Lead → Admit Conv</div>
       <div class="val">${conv}</div>
       <div class="sub">overall conversion</div>
+    </div>
+    <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
+      <div class="lbl">App Started → Submit</div>
+      <div class="val">${appConv}</div>
+      <div class="sub">${fmtN(submA)} of ${fmtN(appA)} apps</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
       <div class="lbl">EOY Admits Forecast</div>
