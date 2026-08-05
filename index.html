@@ -15,17 +15,25 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .spacer { flex: 1; }
 .as-of { font-size: 11px; color: #6a93c4; }
 
+/* ── LAYOUT ── */
+.layout { display: flex; min-height: calc(100vh - 54px); }
+.sidebar { width: 178px; flex-shrink: 0; background: #fff; border-right: 1px solid #e4e8ee; padding: 20px 0; display: flex; flex-direction: column; }
+.sidebar-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; padding: 0 18px 10px; }
+.tab-btn { display: block; width: 100%; padding: 10px 18px; font-size: 12px; font-weight: 500; color: #666; background: none; border: none; border-left: 3px solid transparent; text-align: left; cursor: pointer; line-height: 1.3; transition: background 0.12s, color 0.12s; }
+.tab-btn:hover { background: #f5f7fa; color: #1a2f55; }
+.tab-btn.active { border-left-color: #1a2f55; color: #1a2f55; font-weight: 700; background: #eef2fa; }
+.main-content { flex: 1; min-width: 0; overflow-x: hidden; }
+
 /* ── PAGE LAYOUT ── */
 .page { padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
 
 /* ── METRIC STRIP ── */
 .metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
-.metric-strip .divider { width: 1px; background: rgba(255,255,255,0.1); margin: 0 4px; }
 .metric-item { padding: 0 20px; }
 .metric-item:first-child { padding-left: 0; }
 .metric-item .lbl { font-size: 10px; color: #6a93c4; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
 .metric-item .val { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1; }
-.metric-item .sub { font-size: 11px; color: #9bbde0; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
+.metric-item .sub { font-size: 11px; color: #9bbde0; margin-top: 5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .metric-item .badge { border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; }
 .badge-green { background: rgba(46,204,113,0.2); color: #6deba0; }
 .badge-red   { background: rgba(231,76,60,0.2);  color: #f5948a; }
@@ -61,7 +69,7 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .ch-kpi .val { font-size: 14px; font-weight: 800; color: #1a2f55; margin-top: 1px; }
 .ch-card-body { padding: 12px 18px; }
 
-/* Stage status rows inside channel cards */
+/* Stage status rows */
 .stage-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #f8f8f6; }
 .stage-row:last-of-type { border-bottom: none; }
 .stage-row .s-name { font-size: 11px; color: #666; width: 84px; flex-shrink: 0; }
@@ -105,78 +113,173 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 <body>
 
 <script>
-/* ═══════════════ DATA ══════════════════════════════════ */
+/* ═══════════════ CONSTANTS ══════════════════════════════════ */
 const MONTHS   = ['Sep-26','Oct-26','Nov-26','Dec-26','Jan-27','Feb-27','Mar-27','Apr-27','May-27','Jun-27','Jul-27','Aug-27'];
 const CHANNELS = ['Perf','Influencer','B2B','Referral','Social Media','Organic'];
 const STAGES   = ['Leads','Application','App Submits','Tetr Trials','Interviews','Offers','Admits'];
 const LAST_IDX = 2; // Nov-26
-
-// Annual targets — all channels combined per stage
-const ANN_ALL = { 'Leads':7500,'Application':3330,'App Submits':2436,'Tetr Trials':1218,'Interviews':773,'Offers':494,'Admits':349 };
-
-// Annual targets per channel
-const ANN = {
-  'Leads':       [2400,1800,600,900,1200,600],
-  'Application': [1080,720,300,450,480,300],
-  'App Submits': [756,504,240,360,336,240],
-  'Tetr Trials': [378,252,120,180,168,120],
-  'Interviews':  [227,151,84,126,101,84],
-  'Offers':      [136,91,59,88,61,59],
-  'Admits':      [95,64,42,63,43,42],
-};
-
 const MW = [0.10,0.09,0.08,0.07,0.10,0.09,0.08,0.08,0.08,0.07,0.08,0.08];
 
-// Monthly actuals — all channels combined
-const ACT_M = {
-  'Leads':       [1430,1280,1630,null,null,null,null,null,null,null,null,null],
-  'Application': [576, 510, 669, null,null,null,null,null,null,null,null,null],
-  'App Submits': [384, 345, 436, null,null,null,null,null,null,null,null,null],
-  'Tetr Trials': [195, 180, 225, null,null,null,null,null,null,null,null,null],
-  'Interviews':  [114, 103, 127, null,null,null,null,null,null,null,null,null],
-  'Offers':      [68,  62,  77,  null,null,null,null,null,null,null,null,null],
-  'Admits':      [45,  41,  67,  null,null,null,null,null,null,null,null,null],
-};
-
-// YTD actuals per channel per stage [Perf, Influencer, B2B, Referral, Social Media, Organic]
-const ACT_CH = {
-  'Leads':       [1300,1100,330,520,690,400],
-  'Application': [540, 390, 155,245,255,170],
-  'App Submits': [360, 255, 115,185,170,130],
-  'Tetr Trials': [195, 140, 58, 95, 80, 72],
-  'Interviews':  [112, 78,  38, 62, 45, 46],
-  'Offers':      [62,  44,  25, 41, 26, 31],
-  'Admits':      [41,  29,  17, 28, 16, 22],
-};
-
-const CPL_T = [12, 26, 39, 10, 30, 0];
-const CAC_T = [1000,683,524,146,756,98];
-const CPL_A = [25, 28, 42, 11, 35, 0];
-const CAC_A = [600,720,560,155,820,105];
-
-// Perf-specific headline metrics
 const PERF = {
-  goodCountryTgt: 0.85,   // 85% of leads should be Good Country
-  goodCountryAct: 0.60,   // actual (derive from mix; replace with real number)
-  leadsToSubmitTgt: 0.08, // 8% leads → app submits
-  submitsToOffersTgt: 0.09, // 9% app submits → offers
+  goodCountryTgt: 0.85,
+  goodCountryAct: 0.60,
+  leadsToSubmitTgt: 0.08,
+  submitsToOffersTgt: 0.09,
+};
+
+/* ═══════════════ PROGRAM DATA ══════════════════════════════
+   NOTE: UG / PG / Exec figures are placeholder proportional
+   splits (50% / 35% / 15% of Overall). Replace with actual
+   per-program data when available.
+══════════════════════════════════════════════════════════════ */
+const PROG_DATA = {
+
+  overall: {
+    label: 'Overall',
+    ANN_ALL: { 'Leads':7500,'Application':3330,'App Submits':2436,'Tetr Trials':1218,'Interviews':773,'Offers':494,'Admits':349 },
+    ANN: {
+      'Leads':       [2400,1800,600,900,1200,600],
+      'Application': [1080,720,300,450,480,300],
+      'App Submits': [756,504,240,360,336,240],
+      'Tetr Trials': [378,252,120,180,168,120],
+      'Interviews':  [227,151,84,126,101,84],
+      'Offers':      [136,91,59,88,61,59],
+      'Admits':      [95,64,42,63,43,42],
+    },
+    ACT_M: {
+      'Leads':       [1430,1280,1630,null,null,null,null,null,null,null,null,null],
+      'Application': [576, 510, 669, null,null,null,null,null,null,null,null,null],
+      'App Submits': [384, 345, 436, null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [195, 180, 225, null,null,null,null,null,null,null,null,null],
+      'Interviews':  [114, 103, 127, null,null,null,null,null,null,null,null,null],
+      'Offers':      [68,  62,  77,  null,null,null,null,null,null,null,null,null],
+      'Admits':      [45,  41,  67,  null,null,null,null,null,null,null,null,null],
+    },
+    ACT_CH: {
+      'Leads':       [1300,1100,330,520,690,400],
+      'Application': [540, 390, 155,245,255,170],
+      'App Submits': [360, 255, 115,185,170,130],
+      'Tetr Trials': [195, 140, 58, 95, 80, 72],
+      'Interviews':  [112, 78,  38, 62, 45, 46],
+      'Offers':      [62,  44,  25, 41, 26, 31],
+      'Admits':      [41,  29,  17, 28, 16, 22],
+    },
+    CPL_T: [12, 26, 39, 10, 30, 0],
+    CAC_T: [1000,683,524,146,756,98],
+    CPL_A: [25, 28, 42, 11, 35, 0],
+    CAC_A: [600,720,560,155,820,105],
+  },
+
+  ug: {
+    label: 'Undergraduate',
+    ANN_ALL: { 'Leads':3750,'Application':1665,'App Submits':1218,'Tetr Trials':609,'Interviews':387,'Offers':247,'Admits':175 },
+    ANN: {
+      'Leads':       [1200,900,300,450,600,300],
+      'Application': [540,360,150,225,240,150],
+      'App Submits': [378,252,120,180,168,120],
+      'Tetr Trials': [189,126,60,90,84,60],
+      'Interviews':  [114,76,42,63,51,42],
+      'Offers':      [68,46,30,44,31,30],
+      'Admits':      [48,32,21,32,22,21],
+    },
+    ACT_M: {
+      'Leads':       [715,640,815,null,null,null,null,null,null,null,null,null],
+      'Application': [288,255,335,null,null,null,null,null,null,null,null,null],
+      'App Submits': [192,173,218,null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [98, 90, 113,null,null,null,null,null,null,null,null,null],
+      'Interviews':  [57, 52, 64, null,null,null,null,null,null,null,null,null],
+      'Offers':      [34, 31, 39, null,null,null,null,null,null,null,null,null],
+      'Admits':      [23, 21, 34, null,null,null,null,null,null,null,null,null],
+    },
+    ACT_CH: {
+      'Leads':       [650,550,165,260,345,200],
+      'Application': [270,195,78, 123,128,85],
+      'App Submits': [180,128,58, 93, 85, 65],
+      'Tetr Trials': [98, 70, 29, 48, 40, 36],
+      'Interviews':  [56, 39, 19, 31, 23, 23],
+      'Offers':      [31, 22, 13, 21, 13, 16],
+      'Admits':      [21, 15, 9,  14, 8,  11],
+    },
+    CPL_T: [12, 26, 38, 10, 29, 0],
+    CAC_T: [980,660,510,140,740,95],
+    CPL_A: [24, 28, 41, 11, 34, 0],
+    CAC_A: [580,700,540,150,800,102],
+  },
+
+  pg: {
+    label: 'Postgraduate',
+    ANN_ALL: { 'Leads':2625,'Application':1166,'App Submits':853,'Tetr Trials':426,'Interviews':271,'Offers':173,'Admits':122 },
+    ANN: {
+      'Leads':       [840,630,210,315,420,210],
+      'Application': [378,252,105,158,168,105],
+      'App Submits': [265,176,84, 126,118,84],
+      'Tetr Trials': [132,88, 42, 63, 59, 42],
+      'Interviews':  [79, 53, 29, 44, 35, 29],
+      'Offers':      [48, 32, 21, 31, 21, 21],
+      'Admits':      [33, 22, 15, 22, 15, 15],
+    },
+    ACT_M: {
+      'Leads':       [501,448,571,null,null,null,null,null,null,null,null,null],
+      'Application': [202,179,234,null,null,null,null,null,null,null,null,null],
+      'App Submits': [134,121,153,null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [68, 63, 79, null,null,null,null,null,null,null,null,null],
+      'Interviews':  [40, 36, 44, null,null,null,null,null,null,null,null,null],
+      'Offers':      [24, 22, 27, null,null,null,null,null,null,null,null,null],
+      'Admits':      [16, 14, 23, null,null,null,null,null,null,null,null,null],
+    },
+    ACT_CH: {
+      'Leads':       [455,385,116,182,242,140],
+      'Application': [189,137,54, 86, 89, 60],
+      'App Submits': [126,89, 40, 65, 60, 46],
+      'Tetr Trials': [68, 49, 20, 33, 28, 25],
+      'Interviews':  [39, 27, 13, 22, 16, 16],
+      'Offers':      [22, 15, 9,  14, 9,  11],
+      'Admits':      [14, 10, 6,  10, 6,  8],
+    },
+    CPL_T: [15, 29, 42, 12, 33, 0],
+    CAC_T: [1200,820,630,175,910,118],
+    CPL_A: [20, 30, 44, 13, 36, 0],
+    CAC_A: [700,840,650,180,970,125],
+  },
+
+  exec: {
+    label: 'Executive',
+    ANN_ALL: { 'Leads':1125,'Application':500,'App Submits':365,'Tetr Trials':183,'Interviews':116,'Offers':74,'Admits':52 },
+    ANN: {
+      'Leads':       [360,270,90, 135,180,90],
+      'Application': [162,108,45, 68, 72, 45],
+      'App Submits': [113,76, 36, 54, 50, 36],
+      'Tetr Trials': [57, 38, 18, 27, 25, 18],
+      'Interviews':  [34, 22, 13, 19, 15, 13],
+      'Offers':      [20, 13, 8,  13, 9,  8],
+      'Admits':      [14, 10, 6,  9,  6,  6],
+    },
+    ACT_M: {
+      'Leads':       [215,192,245,null,null,null,null,null,null,null,null,null],
+      'Application': [86, 77, 100,null,null,null,null,null,null,null,null,null],
+      'App Submits': [58, 52, 65, null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [29, 27, 34, null,null,null,null,null,null,null,null,null],
+      'Interviews':  [17, 15, 19, null,null,null,null,null,null,null,null,null],
+      'Offers':      [10, 9,  12, null,null,null,null,null,null,null,null,null],
+      'Admits':      [7,  6,  10, null,null,null,null,null,null,null,null,null],
+    },
+    ACT_CH: {
+      'Leads':       [195,165,50, 78, 104,60],
+      'Application': [81, 59, 23, 37, 38, 26],
+      'App Submits': [54, 38, 17, 28, 26, 20],
+      'Tetr Trials': [29, 21, 9,  14, 12, 11],
+      'Interviews':  [17, 12, 6,  9,  7,  7],
+      'Offers':      [9,  7,  4,  6,  4,  5],
+      'Admits':      [6,  4,  3,  4,  2,  4],
+    },
+    CPL_T: [20, 35, 50, 15, 40, 0],
+    CAC_T: [1800,1200,950,250,1400,180],
+    CPL_A: [30, 40, 55, 17, 45, 0],
+    CAC_A: [1050,1400,1100,320,1700,220],
+  },
 };
 
 /* ═══════════════ HELPERS ═══════════════════════════════ */
-function ytdAct(stage) {
-  return ACT_M[stage].slice(0, LAST_IDX+1).reduce((s,v)=> s + (v||0), 0);
-}
-function ytdTgtAll(stage) {
-  let t = 0;
-  for (let m=0; m<=LAST_IDX; m++) t += ANN_ALL[stage] * MW[m];
-  return Math.round(t);
-}
-function ytdTgtCh(stage, ci) {
-  let t = 0;
-  for (let m=0; m<=LAST_IDX; m++) t += ANN[stage][ci] * MW[m];
-  return Math.round(t);
-}
-function eoy(a) { return Math.round(a / ((LAST_IDX+1)/12)); }
 function fmtN(n){ return n==null?'—':Math.round(n).toLocaleString(); }
 function fmtU(n){ return n===0?'—':'$'+Math.round(n).toLocaleString(); }
 function pct(a,t){ return t>0?Math.round(a/t*100):null; }
@@ -192,9 +295,25 @@ function chip(a,t){
   return '<span class="chip chip-risk">⚠ At Risk</span>';
 }
 function barCol(s){ return s==='on'?'#2ecc71':s==='beh'?'#f39c12':s==='risk'?'#e74c3c':'#ccc'; }
+function eoy(a){ return Math.round(a / ((LAST_IDX+1)/12)); }
+
+function makeCtxFns(ctx) {
+  const ytdAct = (stage) => ctx.ACT_M[stage].slice(0, LAST_IDX+1).reduce((s,v) => s+(v||0), 0);
+  const ytdTgtAll = (stage) => {
+    let t = 0;
+    for (let m=0; m<=LAST_IDX; m++) t += ctx.ANN_ALL[stage] * MW[m];
+    return Math.round(t);
+  };
+  const ytdTgtCh = (stage, ci) => {
+    let t = 0;
+    for (let m=0; m<=LAST_IDX; m++) t += ctx.ANN[stage][ci] * MW[m];
+    return Math.round(t);
+  };
+  return { ytdAct, ytdTgtAll, ytdTgtCh };
+}
 </script>
 
-<!-- ═════════════════════ TOPBAR ════════════════════════ -->
+<!-- ════════════════════ TOPBAR ════════════════════════ -->
 <div class="topbar">
   <h1>Tetr Admissions Tracker</h1>
   <span class="yr-badge">AY 2026–27</span>
@@ -202,58 +321,98 @@ function barCol(s){ return s==='on'?'#2ecc71':s==='beh'?'#f39c12':s==='risk'?'#e
   <span class="as-of">As of <strong style="color:#fff" id="as-of-lbl"></strong></span>
 </div>
 
-<div class="page">
+<div class="layout">
 
-  <!-- METRIC STRIP -->
-  <div class="metric-strip" id="metric-strip"></div>
+  <!-- SIDEBAR TABS -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Program</div>
+    <button class="tab-btn active" data-prog="overall">Overall</button>
+    <button class="tab-btn" data-prog="ug">Undergraduate</button>
+    <button class="tab-btn" data-prog="pg">Postgraduate</button>
+    <button class="tab-btn" data-prog="exec">Executive</button>
+  </aside>
 
-  <!-- TWO CHARTS -->
-  <div class="two-col">
-    <div class="card">
-      <div class="card-head">
-        <h3>Current Enrollments</h3>
-        <div class="sub">YTD admits per stage vs annual target</div>
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="page">
+
+      <!-- METRIC STRIP -->
+      <div class="metric-strip" id="metric-strip"></div>
+
+      <!-- TWO CHARTS -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head">
+            <h3>Current Enrollments</h3>
+            <div class="sub">YTD admits per stage vs annual target</div>
+          </div>
+          <div class="card-body"><svg id="chart-current" class="chart-svg"></svg></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h3>EOY Projection</h3>
+            <div class="sub">Projected year-end vs annual target at current pace</div>
+          </div>
+          <div class="card-body"><svg id="chart-proj" class="chart-svg"></svg></div>
+        </div>
       </div>
-      <div class="card-body">
-        <svg id="chart-current" class="chart-svg"></svg>
+
+      <!-- ALERTS -->
+      <div class="alert-bar" id="alert-bar"></div>
+
+      <!-- CHANNEL BREAKDOWN -->
+      <div class="funnel-section">
+        <div class="sec-head">
+          <h2>Channel Breakdown</h2>
+          <span class="sub">YTD actuals vs YTD targets · CPL &amp; CAC in USD</span>
+        </div>
+        <div style="padding:20px 24px">
+          <div class="channels-grid" id="channels-grid"></div>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <h3>EOY Projection</h3>
-        <div class="sub">Projected year-end vs annual target at current pace</div>
-      </div>
-      <div class="card-body">
-        <svg id="chart-proj" class="chart-svg"></svg>
-      </div>
+
     </div>
   </div>
-
-  <!-- ALERTS -->
-  <div class="alert-bar" id="alert-bar"></div>
-
-  <!-- CHANNEL BREAKDOWN -->
-  <div class="funnel-section">
-    <div class="sec-head">
-      <h2>Channel Breakdown</h2>
-      <span class="sub">YTD actuals vs YTD targets · CPL &amp; CAC in USD</span>
-    </div>
-    <div style="padding:20px 24px">
-      <div class="channels-grid" id="channels-grid"></div>
-    </div>
-  </div>
-
 </div>
 
-<!-- ═════════════════════ RENDER ════════════════════════ -->
+<!-- ════════════════════ RENDER ════════════════════════ -->
 <script>
 document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' + (LAST_IDX+1) + ' of 12 months';
 
-/* ── METRIC STRIP ──────────────────────────────────────── */
-(function(){
-  const admA  = ytdAct('Admits'),  admT  = ytdTgtAll('Admits');
-  const leadA = ytdAct('Leads'),   leadT = ytdTgtAll('Leads');
-  const ann   = ANN_ALL['Admits'];
+/* ── SVG CHART HELPER ── */
+function makeSVG(id, rows) {
+  const LW = 90, RW = 110, BH = 28, GAP = 12;
+  const W = 440, H = rows.length * (BH + GAP) - GAP + 4;
+  const el = document.getElementById(id);
+  el.setAttribute('viewBox', `0 0 ${LW+W+RW} ${H}`);
+  el.style.height = (H * 0.9) + 'px';
+  let svg = '';
+  rows.forEach(({label, actual, target, color, note}, i) => {
+    const y = i * (BH + GAP);
+    const barW = target > 0 ? Math.min(actual / target, 1.25) * W : 0;
+    const tgtX = LW + W;
+    svg += `<rect x="${LW}" y="${y}" width="${W}" height="${BH}" rx="4" fill="#f0f2f5"/>`;
+    svg += `<rect x="${LW}" y="${y}" width="${Math.round(barW)}" height="${BH}" rx="4" fill="${color}" opacity="0.85"/>`;
+    svg += `<line x1="${tgtX}" y1="${y-3}" x2="${tgtX}" y2="${y+BH+3}" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg += `<text x="${LW-8}" y="${y+BH/2+4}" text-anchor="end" font-size="11" font-weight="600" fill="#555" font-family="system-ui">${label}</text>`;
+    svg += `<text x="${tgtX+8}" y="${y+BH/2+4}" font-size="11" font-weight="700" fill="${color}" font-family="system-ui">${note}</text>`;
+  });
+  svg += `<text x="${LW+W+2}" y="${H+3}" font-size="9" fill="#bbb" font-family="system-ui">▲ annual target</text>`;
+  el.innerHTML = svg;
+}
+
+/* ── MAIN RENDER ── */
+function renderDashboard(progKey) {
+  const ctx = PROG_DATA[progKey];
+  const { ytdAct, ytdTgtAll, ytdTgtCh } = makeCtxFns(ctx);
+
+  // Metric strip
+  const admA  = ytdAct('Admits'),      admT  = ytdTgtAll('Admits');
+  const leadA = ytdAct('Leads'),       leadT = ytdTgtAll('Leads');
+  const offA  = ytdAct('Offers');
+  const appA  = ytdAct('Application');
+  const submA = ytdAct('App Submits');
+  const ann   = ctx.ANN_ALL['Admits'];
   const proj  = eoy(admA);
   const varPct = admT>0 ? Math.round((admA-admT)/admT*100) : 0;
   const varBadge = varPct>=0
@@ -262,11 +421,8 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
   const projBadge = proj>=ann
     ? `<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`
     : `<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
-  const offA  = ytdAct('Offers');
-  const conv = offA>0 ? (admA/offA*100).toFixed(1)+'%' : '—';
-  const appA  = ytdAct('Application');
-  const submA = ytdAct('App Submits');
-  const appConv = appA>0 ? (submA/appA*100).toFixed(1)+'%' : '—';
+  const conv    = offA>0  ? (admA/offA*100).toFixed(1)+'%'  : '—';
+  const appConv = appA>0  ? (submA/appA*100).toFixed(1)+'%' : '—';
 
   document.getElementById('metric-strip').innerHTML = `
     <div class="metric-item">
@@ -294,163 +450,103 @@ document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' +
       <div class="val" style="color:${proj>=ann?'#6deba0':'#f5948a'}">${fmtN(proj)}</div>
       <div class="sub">vs ${fmtN(ann)} annual ${projBadge}</div>
     </div>`;
-})();
 
-/* ── CHART HELPERS ─────────────────────────────────────── */
-function makeSVG(id, rows) {
-  // rows: [{label, actual, target, color, note}]
-  const LW = 90, RW = 110, BH = 28, GAP = 12;
-  const W = 440, H = rows.length * (BH + GAP) - GAP + 4;
-  const el = document.getElementById(id);
-  el.setAttribute('viewBox', `0 0 ${LW+W+RW} ${H}`);
-  el.style.height = (H * 0.9) + 'px';
-
-  let svg = '';
-  rows.forEach(({label, actual, target, color, note}, i) => {
-    const y = i * (BH + GAP);
-    const barW = target > 0 ? Math.min(actual / target, 1.25) * W : 0;
-    const tgtX = LW + W;
-
-    // bg bar
-    svg += `<rect x="${LW}" y="${y}" width="${W}" height="${BH}" rx="4" fill="#f0f2f5"/>`;
-    // actual bar
-    svg += `<rect x="${LW}" y="${y}" width="${Math.round(barW)}" height="${BH}" rx="4" fill="${color}" opacity="0.85"/>`;
-    // target line
-    svg += `<line x1="${tgtX}" y1="${y-3}" x2="${tgtX}" y2="${y+BH+3}" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>`;
-    // label
-    svg += `<text x="${LW-8}" y="${y+BH/2+4}" text-anchor="end" font-size="11" font-weight="600" fill="#555" font-family="system-ui">${label}</text>`;
-    // value
-    svg += `<text x="${tgtX+8}" y="${y+BH/2+4}" font-size="11" font-weight="700" fill="${color}" font-family="system-ui">${note}</text>`;
-  });
-  // target legend
-  svg += `<text x="${LW+W+2}" y="${H+3}" font-size="9" fill="#bbb" font-family="system-ui">▲ annual target</text>`;
-  el.innerHTML = svg;
-}
-
-/* ── CHART 1 — Current YTD ────────────────────────────── */
-(function(){
-  const rows = STAGES.map(st => {
-    const a = ytdAct(st), t = ytdTgtAll(st), ann = ANN_ALL[st];
+  // Chart 1: Current YTD
+  makeSVG('chart-current', STAGES.map(st => {
+    const a = ytdAct(st), t = ytdTgtAll(st), annSt = ctx.ANN_ALL[st];
     const s = statusOf(a, t);
-    const p = ann > 0 ? Math.round(a/ann*100) : 0;
-    return { label: st, actual: a, target: ann, color: barCol(s), note: `${fmtN(a)}  (${p}% of ${fmtN(ann)})` };
-  });
-  makeSVG('chart-current', rows);
-})();
+    const p = annSt > 0 ? Math.round(a/annSt*100) : 0;
+    return { label: st, actual: a, target: annSt, color: barCol(s), note: `${fmtN(a)}  (${p}% of ${fmtN(annSt)})` };
+  }));
 
-/* ── CHART 2 — EOY Projection ─────────────────────────── */
-(function(){
-  const rows = STAGES.map(st => {
-    const a   = ytdAct(st);
-    const ann = ANN_ALL[st];
-    const proj = eoy(a);
-    const color = proj >= ann ? '#27ae60' : '#e74c3c';
-    const gap = proj - ann;
+  // Chart 2: EOY Projection
+  makeSVG('chart-proj', STAGES.map(st => {
+    const a = ytdAct(st), annSt = ctx.ANN_ALL[st];
+    const pr = eoy(a);
+    const color = pr >= annSt ? '#27ae60' : '#e74c3c';
+    const gap = pr - annSt;
     const sign = gap >= 0 ? '+' : '';
-    return { label: st, actual: proj, target: ann, color, note: `${fmtN(proj)}  (${sign}${fmtN(gap)})` };
-  });
-  makeSVG('chart-proj', rows);
-})();
+    return { label: st, actual: pr, target: annSt, color, note: `${fmtN(pr)}  (${sign}${fmtN(gap)})` };
+  }));
 
-/* ── ALERTS ────────────────────────────────────────────── */
-(function(){
+  // Alerts
   const reds = [], ambers = [];
   STAGES.forEach(st => {
     const a=ytdAct(st), t=ytdTgtAll(st), s=statusOf(a,t);
-    if(s==='risk') reds.push(`Overall ${st} at ${pct(a,t)}% of YTD target`);
-    else if(s==='beh') ambers.push(`Overall ${st} at ${pct(a,t)}% of YTD target`);
+    if(s==='risk') reds.push(`${st} at ${pct(a,t)}% of YTD target`);
+    else if(s==='beh') ambers.push(`${st} at ${pct(a,t)}% of YTD target`);
   });
   CHANNELS.forEach((ch,ci) => {
-    const cs = CAC_A[ci]>0&&CAC_T[ci]>0&&CAC_A[ci]/CAC_T[ci]>1.2;
-    if(cs) reds.push(`${ch} CAC over budget (${fmtU(CAC_A[ci])} vs ${fmtU(CAC_T[ci])} target)`);
-    const cpl = CPL_A[ci]>0&&CPL_T[ci]>0&&CPL_A[ci]/CPL_T[ci]>1.2;
-    if(cpl) ambers.push(`${ch} CPL over budget (${fmtU(CPL_A[ci])} vs ${fmtU(CPL_T[ci])} target)`);
+    if(ctx.CAC_A[ci]>0&&ctx.CAC_T[ci]>0&&ctx.CAC_A[ci]/ctx.CAC_T[ci]>1.2)
+      reds.push(`${ch} CAC over budget (${fmtU(ctx.CAC_A[ci])} vs ${fmtU(ctx.CAC_T[ci])} target)`);
+    if(ctx.CPL_A[ci]>0&&ctx.CPL_T[ci]>0&&ctx.CPL_A[ci]/ctx.CPL_T[ci]>1.2)
+      ambers.push(`${ch} CPL over budget (${fmtU(ctx.CPL_A[ci])} vs ${fmtU(ctx.CPL_T[ci])} target)`);
   });
   const bar = document.getElementById('alert-bar');
-  if(reds.length+ambers.length===0){
-    bar.innerHTML = '<span class="alert-label">Status</span><span class="alert-tag tag-ok">✓ Everything on track</span>';
-  } else {
-    bar.innerHTML = '<span class="alert-label">Needs attention</span>'
+  bar.innerHTML = reds.length+ambers.length===0
+    ? '<span class="alert-label">Status</span><span class="alert-tag tag-ok">✓ Everything on track</span>'
+    : '<span class="alert-label">Needs attention</span>'
       + reds.map(m=>`<span class="alert-tag tag-risk">⚠ ${m}</span>`).join('')
       + ambers.map(m=>`<span class="alert-tag tag-beh">▼ ${m}</span>`).join('');
-  }
-})();
 
-/* ── CHANNEL CARDS ─────────────────────────────────────── */
-(function(){
+  // Channel cards
   let html = '';
   CHANNELS.forEach((ch, ci) => {
-    const admA  = ACT_CH['Admits'][ci],  admT  = ytdTgtCh('Admits',ci);
-    const leadA = ACT_CH['Leads'][ci],   leadT = ytdTgtCh('Leads',ci);
-    const admS  = statusOf(admA, admT);
-    const admColor = barCol(admS);
+    const admACh  = ctx.ACT_CH['Admits'][ci], admTCh = ytdTgtCh('Admits',ci);
+    const leadACh = ctx.ACT_CH['Leads'][ci];
+    const admColor = barCol(statusOf(admACh, admTCh));
 
-    // ── Perf headline metrics block ──────────────────────
     let perfMetrics = '';
     if (ci === 0) {
-      const submitsA = ACT_CH['App Submits'][0];
-      const offersA  = ACT_CH['Offers'][0];
-
-      // Good Country %
-      const gcAct    = leadA * PERF.goodCountryAct;
+      const submitsA = ctx.ACT_CH['App Submits'][0];
+      const offersA  = ctx.ACT_CH['Offers'][0];
+      const gcAct    = leadACh * PERF.goodCountryAct;
       const gcActPct = Math.round(PERF.goodCountryAct * 100);
       const gcTgtPct = Math.round(PERF.goodCountryTgt * 100);
-      const gcStatus = gcActPct >= gcTgtPct * 0.95 ? 'on' : gcActPct >= gcTgtPct * 0.80 ? 'beh' : 'risk';
-
-      // CPL status (lower = better)
-      const cplRatio  = CPL_T[0] > 0 ? CPL_A[0] / CPL_T[0] : 1;
-      const cplStatus = cplRatio <= 1.05 ? 'on' : cplRatio <= 1.20 ? 'beh' : 'risk';
-
-      // CAC status (lower = better)
-      const cacRatio  = CAC_T[0] > 0 ? CAC_A[0] / CAC_T[0] : 1;
-      const cacStatus = cacRatio <= 1.05 ? 'on' : cacRatio <= 1.20 ? 'beh' : 'risk';
-
-      // Leads → App Submits
-      const l2sAct    = leadA > 0 ? submitsA / leadA : 0;
-      const l2sActPct = (l2sAct * 100).toFixed(1);
-      const l2sTgtPct = (PERF.leadsToSubmitTgt * 100).toFixed(0);
-      const l2sAbsT   = Math.round(leadA * PERF.leadsToSubmitTgt);
-      const l2sStatus = l2sAct >= PERF.leadsToSubmitTgt * 0.95 ? 'on' : l2sAct >= PERF.leadsToSubmitTgt * 0.80 ? 'beh' : 'risk';
-
-      // App Submits → Offers
-      const s2oAct    = submitsA > 0 ? offersA / submitsA : 0;
-      const s2oActPct = (s2oAct * 100).toFixed(1);
-      const s2oTgtPct = (PERF.submitsToOffersTgt * 100).toFixed(0);
-      const s2oAbsT   = Math.round(submitsA * PERF.submitsToOffersTgt);
-      const s2oStatus = s2oAct >= PERF.submitsToOffersTgt * 0.95 ? 'on' : s2oAct >= PERF.submitsToOffersTgt * 0.80 ? 'beh' : 'risk';
-
+      const gcStatus = gcActPct >= gcTgtPct*0.95 ? 'on' : gcActPct >= gcTgtPct*0.80 ? 'beh' : 'risk';
+      const cplRatio  = ctx.CPL_T[0]>0 ? ctx.CPL_A[0]/ctx.CPL_T[0] : 1;
+      const cplStatus = cplRatio<=1.05?'on':cplRatio<=1.20?'beh':'risk';
+      const cacRatio  = ctx.CAC_T[0]>0 ? ctx.CAC_A[0]/ctx.CAC_T[0] : 1;
+      const cacStatus = cacRatio<=1.05?'on':cacRatio<=1.20?'beh':'risk';
+      const l2sAct    = leadACh>0 ? submitsA/leadACh : 0;
+      const l2sActPct = (l2sAct*100).toFixed(1);
+      const l2sTgtPct = (PERF.leadsToSubmitTgt*100).toFixed(0);
+      const l2sAbsT   = Math.round(leadACh*PERF.leadsToSubmitTgt);
+      const l2sStatus = l2sAct>=PERF.leadsToSubmitTgt*0.95?'on':l2sAct>=PERF.leadsToSubmitTgt*0.80?'beh':'risk';
+      const s2oAct    = submitsA>0 ? offersA/submitsA : 0;
+      const s2oActPct = (s2oAct*100).toFixed(1);
+      const s2oTgtPct = (PERF.submitsToOffersTgt*100).toFixed(0);
+      const s2oAbsT   = Math.round(submitsA*PERF.submitsToOffersTgt);
+      const s2oStatus = s2oAct>=PERF.submitsToOffersTgt*0.95?'on':s2oAct>=PERF.submitsToOffersTgt*0.80?'beh':'risk';
       const c = (s) => barCol(s);
 
-      // TOP: Good Country + CPL + CAC
       perfMetrics = `<div class="perf-metrics">
         <div class="perf-metric">
           <div class="pm-label">Good Country</div>
           <div class="pm-pct" style="color:${c(gcStatus)}">${gcActPct}%</div>
-          <div class="pm-abs">${fmtN(Math.round(gcAct))} of ${fmtN(leadA)} leads</div>
-          <div class="pm-tgt">Target: ${gcTgtPct}% · ${fmtN(Math.round(leadA*PERF.goodCountryTgt))}</div>
+          <div class="pm-abs">${fmtN(Math.round(gcAct))} of ${fmtN(leadACh)} leads</div>
+          <div class="pm-tgt">Target: ${gcTgtPct}% · ${fmtN(Math.round(leadACh*PERF.goodCountryTgt))}</div>
         </div>
         <div class="perf-metric">
           <div class="pm-label">CPL (USD)</div>
-          <div class="pm-pct" style="color:${c(cplStatus)}">${fmtU(CPL_A[0])}</div>
+          <div class="pm-pct" style="color:${c(cplStatus)}">${fmtU(ctx.CPL_A[0])}</div>
           <div class="pm-abs">${Math.round(cplRatio*100)}% of target</div>
-          <div class="pm-tgt">Target: ${fmtU(CPL_T[0])}</div>
+          <div class="pm-tgt">Target: ${fmtU(ctx.CPL_T[0])}</div>
         </div>
         <div class="perf-metric">
           <div class="pm-label">CAC (USD)</div>
-          <div class="pm-pct" style="color:${c(cacStatus)}">${fmtU(CAC_A[0])}</div>
+          <div class="pm-pct" style="color:${c(cacStatus)}">${fmtU(ctx.CAC_A[0])}</div>
           <div class="pm-abs">${Math.round(cacRatio*100)}% of target</div>
-          <div class="pm-tgt">Target: ${fmtU(CAC_T[0])}</div>
+          <div class="pm-tgt">Target: ${fmtU(ctx.CAC_T[0])}</div>
         </div>
       </div>`;
 
-      // BOTTOM footer (replaces CPL/CAC): conversions
-      // injected via perfFooter variable below
       window._perfFooter = `<div class="cost-row-ch" style="gap:16px">
         <div class="cost-item">
           <div class="lbl">Leads → App Submits</div>
           <div class="vals">
             <span class="actual" style="color:${c(l2sStatus)}">${l2sActPct}%</span>
-            <span class="target">(${fmtN(submitsA)} of ${fmtN(leadA)})</span>
+            <span class="target">(${fmtN(submitsA)} of ${fmtN(leadACh)})</span>
           </div>
           <div style="font-size:10px;color:#bbb;margin-top:2px">Target: ${l2sTgtPct}% · ${fmtN(l2sAbsT)} expected</div>
         </div>
@@ -465,10 +561,9 @@ function makeSVG(id, rows) {
       </div>`;
     }
 
-    // stage rows
     let stageHtml = '';
     STAGES.forEach(st => {
-      const a = ACT_CH[st][ci], t = ytdTgtCh(st, ci);
+      const a = ctx.ACT_CH[st][ci], t = ytdTgtCh(st, ci);
       const s = statusOf(a, t);
       const bw = t>0 ? Math.min(Math.round(a/t*100),130) : 0;
       stageHtml += `<div class="stage-row">
@@ -479,10 +574,10 @@ function makeSVG(id, rows) {
       </div>`;
     });
 
-    // CPL / CAC
-    const cplColor = barCol(CPL_T[ci]>0?(CPL_A[ci]/CPL_T[ci]<=1.05?'on':CPL_A[ci]/CPL_T[ci]<=1.20?'beh':'risk'):null);
-    const cacS = CAC_T[ci]>0 ? (CAC_A[ci]/CAC_T[ci]<=1.05?'on':CAC_A[ci]/CAC_T[ci]<=1.20?'beh':'risk') : null;
-    const cacColor = barCol(cacS);
+    const cplRatioCh = ctx.CPL_T[ci]>0 ? ctx.CPL_A[ci]/ctx.CPL_T[ci] : 1;
+    const cplColor   = barCol(ctx.CPL_T[ci]>0?(cplRatioCh<=1.05?'on':cplRatioCh<=1.20?'beh':'risk'):null);
+    const cacRatioCh = ctx.CAC_T[ci]>0 ? ctx.CAC_A[ci]/ctx.CAC_T[ci] : 1;
+    const cacColor   = barCol(ctx.CAC_T[ci]>0?(cacRatioCh<=1.05?'on':cacRatioCh<=1.20?'beh':'risk'):null);
 
     html += `<div class="ch-card">
       <div class="ch-card-head">
@@ -490,11 +585,11 @@ function makeSVG(id, rows) {
         <div class="ch-kpis">
           <div class="ch-kpi">
             <div class="lbl">Leads YTD</div>
-            <div class="val">${fmtN(leadA)}</div>
+            <div class="val">${fmtN(leadACh)}</div>
           </div>
           <div class="ch-kpi">
             <div class="lbl">Admits YTD</div>
-            <div class="val" style="color:${admColor}">${fmtN(admA)}</div>
+            <div class="val" style="color:${admColor}">${fmtN(admACh)}</div>
           </div>
         </div>
       </div>
@@ -507,15 +602,15 @@ function makeSVG(id, rows) {
           <div class="cost-item">
             <div class="lbl">CPL (USD)</div>
             <div class="vals">
-              <span class="actual" style="color:${cplColor}">${fmtU(CPL_A[ci])}</span>
-              <span class="target">/ ${fmtU(CPL_T[ci])}</span>
+              <span class="actual" style="color:${cplColor}">${fmtU(ctx.CPL_A[ci])}</span>
+              <span class="target">/ ${fmtU(ctx.CPL_T[ci])}</span>
             </div>
           </div>
           <div class="cost-item">
             <div class="lbl">CAC (USD)</div>
             <div class="vals">
-              <span class="actual" style="color:${cacColor}">${fmtU(CAC_A[ci])}</span>
-              <span class="target">/ ${fmtU(CAC_T[ci])}</span>
+              <span class="actual" style="color:${cacColor}">${fmtU(ctx.CAC_A[ci])}</span>
+              <span class="target">/ ${fmtU(ctx.CAC_T[ci])}</span>
             </div>
           </div>
         </div>`}
@@ -523,7 +618,19 @@ function makeSVG(id, rows) {
     </div>`;
   });
   document.getElementById('channels-grid').innerHTML = html;
-})();
+}
+
+/* ── TAB SWITCHING ── */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDashboard(btn.dataset.prog);
+  });
+});
+
+/* ── INITIAL RENDER ── */
+renderDashboard('overall');
 </script>
 </body>
 </html>
