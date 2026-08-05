@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tetr Admissions Tracker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #111; font-size: 13px; }
+
+/* ── TOPBAR ── */
+.topbar { background: #1a2f55; padding: 0 32px; display: flex; align-items: center; height: 54px; gap: 16px; }
+.topbar h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.yr-badge { background: rgba(255,255,255,0.12); color: #9bbde0; border-radius: 20px; padding: 3px 11px; font-size: 11px; font-weight: 600; }
+.spacer { flex: 1; }
+.as-of { font-size: 11px; color: #6a93c4; }
+
+/* ── PAGE LAYOUT ── */
+.page { padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── METRIC STRIP ── */
+.metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.metric-strip .divider { width: 1px; background: rgba(255,255,255,0.1); margin: 0 4px; }
+.metric-item { padding: 0 20px; }
+.metric-item:first-child { padding-left: 0; }
+.metric-item .lbl { font-size: 10px; color: #6a93c4; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.metric-item .val { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1; }
+.metric-item .sub { font-size: 11px; color: #9bbde0; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
+.metric-item .badge { border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; }
+.badge-green { background: rgba(46,204,113,0.2); color: #6deba0; }
+.badge-red   { background: rgba(231,76,60,0.2);  color: #f5948a; }
+.badge-amber { background: rgba(243,156,18,0.2); color: #fbd07c; }
+
+/* ── TWO-COL ROW ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ── CARDS ── */
+.card { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
+.card-head { padding: 14px 20px 10px; border-bottom: 1px solid #f0f2f5; }
+.card-head h3 { font-size: 13px; font-weight: 700; color: #1a2f55; }
+.card-head .sub { font-size: 11px; color: #aaa; margin-top: 2px; }
+.card-body { padding: 16px 20px; }
+
+/* ── SVG CHARTS ── */
+.chart-svg { width: 100%; overflow: visible; display: block; }
+
+/* ── FUNNEL SECTION ── */
+.funnel-section { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
+.funnel-section .sec-head { padding: 14px 24px; border-bottom: 1px solid #f0f2f5; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.funnel-section .sec-head h2 { font-size: 13px; font-weight: 700; color: #1a2f55; }
+.funnel-section .sec-head .sub { font-size: 11px; color: #aaa; }
+
+/* ── CHANNELS ── */
+.channels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.ch-card { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
+.ch-card-head { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f2f5; }
+.ch-card-head .name { font-size: 14px; font-weight: 800; color: #1a2f55; }
+.ch-card-head .ch-kpis { display: flex; gap: 12px; }
+.ch-kpi { text-align: right; }
+.ch-kpi .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; }
+.ch-kpi .val { font-size: 14px; font-weight: 800; color: #1a2f55; margin-top: 1px; }
+.ch-card-body { padding: 12px 18px; }
+
+/* Stage status rows inside channel cards */
+.stage-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #f8f8f6; }
+.stage-row:last-of-type { border-bottom: none; }
+.stage-row .s-name { font-size: 11px; color: #666; width: 84px; flex-shrink: 0; }
+.stage-row .s-bar-wrap { flex: 1; height: 5px; background: #f0f0ec; border-radius: 3px; overflow: hidden; }
+.stage-row .s-bar { height: 100%; border-radius: 3px; }
+.stage-row .s-nums { font-size: 11px; width: 70px; text-align: right; flex-shrink: 0; color: #666; }
+.stage-row .s-chip { flex-shrink: 0; }
+
+/* CPL / CAC row */
+.cost-row-ch { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; }
+.cost-item { flex: 1; }
+.cost-item .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; }
+.cost-item .vals { display: flex; align-items: baseline; gap: 5px; margin-top: 2px; }
+.cost-item .actual { font-size: 14px; font-weight: 800; }
+.cost-item .target { font-size: 11px; color: #bbb; }
+
+/* ── CHIPS ── */
+.chip { border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 700; white-space: nowrap; display: inline-block; }
+.chip-on  { background: #e8f5e8; color: #1a7a3a; }
+.chip-beh { background: #fff4e0; color: #8a5c00; }
+.chip-risk{ background: #fde8e8; color: #c0392b; }
+.chip-na  { background: #f0f0ec; color: #bbb; }
+
+/* ── ALERTS ── */
+.alert-bar { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.alert-label { font-size: 11px; font-weight: 700; color: #1a2f55; margin-right: 4px; }
+.alert-tag { border-radius: 6px; padding: 4px 11px; font-size: 11px; font-weight: 600; }
+.tag-risk { background: #fde8e8; color: #c0392b; }
+.tag-beh  { background: #fff4e0; color: #8a5c00; }
+.tag-ok   { background: #e8f5e8; color: #1a7a3a; font-weight: 400; font-style: italic; }
+</style>
+</head>
+<body>
+
+<script>
+/* ═══════════════ DATA ══════════════════════════════════ */
+const MONTHS   = ['Sep-26','Oct-26','Nov-26','Dec-26','Jan-27','Feb-27','Mar-27','Apr-27','May-27','Jun-27','Jul-27','Aug-27'];
+const CHANNELS = ['Perf','Influencer','B2B','Referral','Social Media','Organic'];
+const STAGES   = ['Leads','Application','App Submits','Tetr Trials','Interviews','Offers','Admits'];
+const LAST_IDX = 2; // Nov-26
+
+// Annual targets — all channels combined per stage
+const ANN_ALL = { 'Leads':7500,'Application':3330,'App Submits':2436,'Tetr Trials':1218,'Interviews':773,'Offers':494,'Admits':349 };
+
+// Annual targets per channel
+const ANN = {
+  'Leads':       [2400,1800,600,900,1200,600],
+  'Application': [1080,720,300,450,480,300],
+  'App Submits': [756,504,240,360,336,240],
+  'Tetr Trials': [378,252,120,180,168,120],
+  'Interviews':  [227,151,84,126,101,84],
+  'Offers':      [136,91,59,88,61,59],
+  'Admits':      [95,64,42,63,43,42],
+};
+
+const MW = [0.10,0.09,0.08,0.07,0.10,0.09,0.08,0.08,0.08,0.07,0.08,0.08];
+
+// Monthly actuals — all channels combined
+const ACT_M = {
+  'Leads':       [1430,1280,1630,null,null,null,null,null,null,null,null,null],
+  'Application': [576, 510, 669, null,null,null,null,null,null,null,null,null],
+  'App Submits': [384, 345, 436, null,null,null,null,null,null,null,null,null],
+  'Tetr Trials': [195, 180, 225, null,null,null,null,null,null,null,null,null],
+  'Interviews':  [114, 103, 127, null,null,null,null,null,null,null,null,null],
+  'Offers':      [68,  62,  77,  null,null,null,null,null,null,null,null,null],
+  'Admits':      [45,  41,  67,  null,null,null,null,null,null,null,null,null],
+};
+
+// YTD actuals per channel per stage [Perf, Influencer, B2B, Referral, Social Media, Organic]
+const ACT_CH = {
+  'Leads':       [1300,1100,330,520,690,400],
+  'Application': [540, 390, 155,245,255,170],
+  'App Submits': [360, 255, 115,185,170,130],
+  'Tetr Trials': [195, 140, 58, 95, 80, 72],
+  'Interviews':  [112, 78,  38, 62, 45, 46],
+  'Offers':      [62,  44,  25, 41, 26, 31],
+  'Admits':      [41,  29,  17, 28, 16, 22],
+};
+
+const CPL_T = [22,26,39,10,30,0];
+const CAC_T = [549,683,524,146,756,98];
+const CPL_A = [25,28,42,11,35,0];
+const CAC_A = [600,720,560,155,820,105];
+
+/* ═══════════════ HELPERS ═══════════════════════════════ */
+function ytdAct(stage) {
+  return ACT_M[stage].slice(0, LAST_IDX+1).reduce((s,v)=> s + (v||0), 0);
+}
+function ytdTgtAll(stage) {
+  let t = 0;
+  for (let m=0; m<=LAST_IDX; m++) t += ANN_ALL[stage] * MW[m];
+  return Math.round(t);
+}
+function ytdTgtCh(stage, ci) {
+  let t = 0;
+  for (let m=0; m<=LAST_IDX; m++) t += ANN[stage][ci] * MW[m];
+  return Math.round(t);
+}
+function eoy(a) { return Math.round(a / ((LAST_IDX+1)/12)); }
+function fmtN(n){ return n==null?'—':Math.round(n).toLocaleString(); }
+function fmtU(n){ return n===0?'—':'$'+Math.round(n).toLocaleString(); }
+function pct(a,t){ return t>0?Math.round(a/t*100):null; }
+function statusOf(a,t){
+  if(!t||a==null) return null;
+  const r=a/t; return r>=0.95?'on':r>=0.8?'beh':'risk';
+}
+function chip(a,t){
+  const s=statusOf(a,t);
+  if(!s) return '<span class="chip chip-na">—</span>';
+  if(s==='on')  return '<span class="chip chip-on">✓ On Track</span>';
+  if(s==='beh') return '<span class="chip chip-beh">▼ Behind</span>';
+  return '<span class="chip chip-risk">⚠ At Risk</span>';
+}
+function barCol(s){ return s==='on'?'#2ecc71':s==='beh'?'#f39c12':s==='risk'?'#e74c3c':'#ccc'; }
+</script>
+
+<!-- ═════════════════════ TOPBAR ════════════════════════ -->
+<div class="topbar">
+  <h1>Tetr Admissions Tracker</h1>
+  <span class="yr-badge">AY 2026–27</span>
+  <span class="spacer"></span>
+  <span class="as-of">As of <strong style="color:#fff" id="as-of-lbl"></strong></span>
+</div>
+
+<div class="page">
+
+  <!-- METRIC STRIP -->
+  <div class="metric-strip" id="metric-strip"></div>
+
+  <!-- TWO CHARTS -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head">
+        <h3>Current Enrollments</h3>
+        <div class="sub">YTD admits per stage vs annual target</div>
+      </div>
+      <div class="card-body">
+        <svg id="chart-current" class="chart-svg"></svg>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h3>EOY Projection</h3>
+        <div class="sub">Projected year-end vs annual target at current pace</div>
+      </div>
+      <div class="card-body">
+        <svg id="chart-proj" class="chart-svg"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="alert-bar" id="alert-bar"></div>
+
+  <!-- CHANNEL BREAKDOWN -->
+  <div class="funnel-section">
+    <div class="sec-head">
+      <h2>Channel Breakdown</h2>
+      <span class="sub">YTD actuals vs YTD targets · CPL &amp; CAC in USD</span>
+    </div>
+    <div style="padding:20px 24px">
+      <div class="channels-grid" id="channels-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═════════════════════ RENDER ════════════════════════ -->
+<script>
+document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' + (LAST_IDX+1) + ' of 12 months';
+
+/* ── METRIC STRIP ──────────────────────────────────────── */
+(function(){
+  const admA  = ytdAct('Admits'),  admT  = ytdTgtAll('Admits');
+  const leadA = ytdAct('Leads'),   leadT = ytdTgtAll('Leads');
+  const ann   = ANN_ALL['Admits'];
+  const proj  = eoy(admA);
+  const varPct = admT>0 ? Math.round((admA-admT)/admT*100) : 0;
+  const varBadge = varPct>=0
+    ? `<span class="badge badge-green">+${varPct}% vs target</span>`
+    : `<span class="badge badge-red">${varPct}% vs target</span>`;
+  const projBadge = proj>=ann
+    ? `<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`
+    : `<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
+  const conv = leadA>0 ? (admA/leadA*100).toFixed(2)+'%' : '—';
+
+  document.getElementById('metric-strip').innerHTML = `
+    <div class="metric-item">
+      <div class="lbl">Admits YTD</div>
+      <div class="val">${fmtN(admA)}</div>
+      <div class="sub">of ${fmtN(admT)} YTD target ${varBadge}</div>
+    </div>
+    <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
+      <div class="lbl">Leads YTD</div>
+      <div class="val">${fmtN(leadA)}</div>
+      <div class="sub">of ${fmtN(leadT)} YTD target</div>
+    </div>
+    <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
+      <div class="lbl">Lead → Admit Conv</div>
+      <div class="val">${conv}</div>
+      <div class="sub">overall conversion</div>
+    </div>
+    <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
+      <div class="lbl">EOY Admits Forecast</div>
+      <div class="val" style="color:${proj>=ann?'#6deba0':'#f5948a'}">${fmtN(proj)}</div>
+      <div class="sub">vs ${fmtN(ann)} annual ${projBadge}</div>
+    </div>`;
+})();
+
+/* ── CHART HELPERS ─────────────────────────────────────── */
+function makeSVG(id, rows) {
+  // rows: [{label, actual, target, color, note}]
+  const LW = 90, RW = 110, BH = 28, GAP = 12;
+  const W = 440, H = rows.length * (BH + GAP) - GAP + 4;
+  const el = document.getElementById(id);
+  el.setAttribute('viewBox', `0 0 ${LW+W+RW} ${H}`);
+  el.style.height = (H * 0.9) + 'px';
+
+  let svg = '';
+  rows.forEach(({label, actual, target, color, note}, i) => {
+    const y = i * (BH + GAP);
+    const barW = target > 0 ? Math.min(actual / target, 1.25) * W : 0;
+    const tgtX = LW + W;
+
+    // bg bar
+    svg += `<rect x="${LW}" y="${y}" width="${W}" height="${BH}" rx="4" fill="#f0f2f5"/>`;
+    // actual bar
+    svg += `<rect x="${LW}" y="${y}" width="${Math.round(barW)}" height="${BH}" rx="4" fill="${color}" opacity="0.85"/>`;
+    // target line
+    svg += `<line x1="${tgtX}" y1="${y-3}" x2="${tgtX}" y2="${y+BH+3}" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    // label
+    svg += `<text x="${LW-8}" y="${y+BH/2+4}" text-anchor="end" font-size="11" font-weight="600" fill="#555" font-family="system-ui">${label}</text>`;
+    // value
+    svg += `<text x="${tgtX+8}" y="${y+BH/2+4}" font-size="11" font-weight="700" fill="${color}" font-family="system-ui">${note}</text>`;
+  });
+  // target legend
+  svg += `<text x="${LW+W+2}" y="${H+3}" font-size="9" fill="#bbb" font-family="system-ui">▲ annual target</text>`;
+  el.innerHTML = svg;
+}
+
+/* ── CHART 1 — Current YTD ────────────────────────────── */
+(function(){
+  const rows = STAGES.map(st => {
+    const a = ytdAct(st), t = ytdTgtAll(st), ann = ANN_ALL[st];
+    const s = statusOf(a, t);
+    const p = ann > 0 ? Math.round(a/ann*100) : 0;
+    return { label: st, actual: a, target: ann, color: barCol(s), note: `${fmtN(a)}  (${p}% of ${fmtN(ann)})` };
+  });
+  makeSVG('chart-current', rows);
+})();
+
+/* ── CHART 2 — EOY Projection ─────────────────────────── */
+(function(){
+  const rows = STAGES.map(st => {
+    const a   = ytdAct(st);
+    const ann = ANN_ALL[st];
+    const proj = eoy(a);
+    const color = proj >= ann ? '#27ae60' : '#e74c3c';
+    const gap = proj - ann;
+    const sign = gap >= 0 ? '+' : '';
+    return { label: st, actual: proj, target: ann, color, note: `${fmtN(proj)}  (${sign}${fmtN(gap)})` };
+  });
+  makeSVG('chart-proj', rows);
+})();
+
+/* ── ALERTS ────────────────────────────────────────────── */
+(function(){
+  const reds = [], ambers = [];
+  STAGES.forEach(st => {
+    const a=ytdAct(st), t=ytdTgtAll(st), s=statusOf(a,t);
+    if(s==='risk') reds.push(`Overall ${st} at ${pct(a,t)}% of YTD target`);
+    else if(s==='beh') ambers.push(`Overall ${st} at ${pct(a,t)}% of YTD target`);
+  });
+  CHANNELS.forEach((ch,ci) => {
+    const cs = CAC_A[ci]>0&&CAC_T[ci]>0&&CAC_A[ci]/CAC_T[ci]>1.2;
+    if(cs) reds.push(`${ch} CAC over budget (${fmtU(CAC_A[ci])} vs ${fmtU(CAC_T[ci])} target)`);
+    const cpl = CPL_A[ci]>0&&CPL_T[ci]>0&&CPL_A[ci]/CPL_T[ci]>1.2;
+    if(cpl) ambers.push(`${ch} CPL over budget (${fmtU(CPL_A[ci])} vs ${fmtU(CPL_T[ci])} target)`);
+  });
+  const bar = document.getElementById('alert-bar');
+  if(reds.length+ambers.length===0){
+    bar.innerHTML = '<span class="alert-label">Status</span><span class="alert-tag tag-ok">✓ Everything on track</span>';
+  } else {
+    bar.innerHTML = '<span class="alert-label">Needs attention</span>'
+      + reds.map(m=>`<span class="alert-tag tag-risk">⚠ ${m}</span>`).join('')
+      + ambers.map(m=>`<span class="alert-tag tag-beh">▼ ${m}</span>`).join('');
+  }
+})();
+
+/* ── CHANNEL CARDS ─────────────────────────────────────── */
+(function(){
+  let html = '';
+  CHANNELS.forEach((ch, ci) => {
+    const admA  = ACT_CH['Admits'][ci],  admT  = ytdTgtCh('Admits',ci);
+    const leadA = ACT_CH['Leads'][ci],   leadT = ytdTgtCh('Leads',ci);
+    const admS  = statusOf(admA, admT);
+    const admColor = barCol(admS);
+
+    // stage rows
+    let stageHtml = '';
+    STAGES.forEach(st => {
+      const a = ACT_CH[st][ci], t = ytdTgtCh(st, ci);
+      const s = statusOf(a, t);
+      const bw = t>0 ? Math.min(Math.round(a/t*100),130) : 0;
+      stageHtml += `<div class="stage-row">
+        <div class="s-name">${st}</div>
+        <div class="s-bar-wrap"><div class="s-bar" style="width:${bw}%;background:${barCol(s)}"></div></div>
+        <div class="s-nums">${fmtN(a)} / ${fmtN(t)}</div>
+        <div class="s-chip">${chip(a,t)}</div>
+      </div>`;
+    });
+
+    // CPL / CAC
+    const cplS = CPL_T[ci]>0 ? statusOf(CPL_A[ci], CPL_T[ci]*1.05) : null; // cost: higher=worse, flip
+    const cacS = CAC_T[ci]>0 ? (CAC_A[ci]/CAC_T[ci]<=1.05?'on':CAC_A[ci]/CAC_T[ci]<=1.20?'beh':'risk') : null;
+    const cplColor = barCol(CPL_T[ci]>0?(CPL_A[ci]/CPL_T[ci]<=1.05?'on':CPL_A[ci]/CPL_T[ci]<=1.20?'beh':'risk'):null);
+    const cacColor = barCol(cacS);
+
+    html += `<div class="ch-card">
+      <div class="ch-card-head">
+        <div class="name">${ch}</div>
+        <div class="ch-kpis">
+          <div class="ch-kpi">
+            <div class="lbl">Leads YTD</div>
+            <div class="val">${fmtN(leadA)}</div>
+          </div>
+          <div class="ch-kpi">
+            <div class="lbl">Admits YTD</div>
+            <div class="val" style="color:${admColor}">${fmtN(admA)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="ch-card-body">
+        ${stageHtml}
+        <div class="cost-row-ch">
+          <div class="cost-item">
+            <div class="lbl">CPL (USD)</div>
+            <div class="vals">
+              <span class="actual" style="color:${cplColor}">${fmtU(CPL_A[ci])}</span>
+              <span class="target">/ ${fmtU(CPL_T[ci])}</span>
+            </div>
+          </div>
+          <div class="cost-item">
+            <div class="lbl">CAC (USD)</div>
+            <div class="vals">
+              <span class="actual" style="color:${cacColor}">${fmtU(CAC_A[ci])}</span>
+              <span class="target">/ ${fmtU(CAC_T[ci])}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('channels-grid').innerHTML = html;
+})();
+</script>
+</body>
+</html>
