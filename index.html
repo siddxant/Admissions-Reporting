@@ -19,87 +19,101 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .layout { display: flex; min-height: calc(100vh - 54px); }
 .sidebar { width: 178px; flex-shrink: 0; background: #fff; border-right: 1px solid #e4e8ee; padding: 20px 0; display: flex; flex-direction: column; }
 .sidebar-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; padding: 0 18px 10px; }
-.tab-btn { display: block; width: 100%; padding: 10px 18px; font-size: 12px; font-weight: 500; color: #666; background: none; border: none; border-left: 3px solid transparent; text-align: left; cursor: pointer; line-height: 1.3; transition: background 0.12s, color 0.12s; }
+.tab-btn { display: block; width: 100%; padding: 10px 18px; font-size: 12px; font-weight: 500; color: #666; background: none; border: none; border-left: 3px solid transparent; text-align: left; cursor: pointer; line-height: 1.3; transition: background 0.12s; }
 .tab-btn:hover { background: #f5f7fa; color: #1a2f55; }
 .tab-btn.active { border-left-color: #1a2f55; color: #1a2f55; font-weight: 700; background: #eef2fa; }
 .main-content { flex: 1; min-width: 0; overflow-x: hidden; }
-
-/* ── PAGE LAYOUT ── */
 .page { padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
 
 /* ── METRIC STRIP ── */
-.metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+.metric-strip { background: #1a2f55; border-radius: 12px; padding: 20px 28px; display: grid; grid-template-columns: repeat(5,1fr); }
 .metric-item { padding: 0 20px; }
 .metric-item:first-child { padding-left: 0; }
 .metric-item .lbl { font-size: 10px; color: #6a93c4; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
 .metric-item .val { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1; }
 .metric-item .sub { font-size: 11px; color: #9bbde0; margin-top: 5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.metric-item .badge { border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; }
+.badge { border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; }
 .badge-green { background: rgba(46,204,113,0.2); color: #6deba0; }
 .badge-red   { background: rgba(231,76,60,0.2);  color: #f5948a; }
-.badge-amber { background: rgba(243,156,18,0.2); color: #fbd07c; }
 
-/* ── TWO-COL ROW ── */
+/* ── TWO-COL ── */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-/* ── CARDS ── */
+/* ── GENERIC CARD ── */
 .card { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
 .card-head { padding: 14px 20px 10px; border-bottom: 1px solid #f0f2f5; }
 .card-head h3 { font-size: 13px; font-weight: 700; color: #1a2f55; }
 .card-head .sub { font-size: 11px; color: #aaa; margin-top: 2px; }
 .card-body { padding: 16px 20px; }
-
-/* ── SVG CHARTS ── */
 .chart-svg { width: 100%; overflow: visible; display: block; }
 
-/* ── FUNNEL SECTION ── */
-.funnel-section { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
-.funnel-section .sec-head { padding: 14px 24px; border-bottom: 1px solid #f0f2f5; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.funnel-section .sec-head h2 { font-size: 13px; font-weight: 700; color: #1a2f55; }
-.funnel-section .sec-head .sub { font-size: 11px; color: #aaa; }
+/* ── SECTION WRAPPER ── */
+.section-wrap { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
+.sec-head { padding: 14px 24px; border-bottom: 1px solid #f0f2f5; display: flex; align-items: center; gap: 10px; }
+.sec-head h2 { font-size: 13px; font-weight: 700; color: #1a2f55; }
+.sec-head .sub { font-size: 11px; color: #aaa; }
 
-/* ── CHANNELS ── */
-.channels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-.ch-card { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; }
-.ch-card-head { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f2f5; }
-.ch-card-head .name { font-size: 14px; font-weight: 800; color: #1a2f55; }
-.ch-card-head .ch-kpis { display: flex; gap: 12px; }
+/* ── CHANNELS GRID ── */
+.channels-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+
+/* ── CHANNEL CARD ── */
+.ch-card { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; overflow: hidden; display: flex; flex-direction: column; }
+.ch-head { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f2f5; flex-shrink: 0; }
+.ch-head .ch-name { font-size: 14px; font-weight: 800; color: #1a2f55; }
+.ch-kpis { display: flex; gap: 16px; }
 .ch-kpi { text-align: right; }
 .ch-kpi .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; }
 .ch-kpi .val { font-size: 14px; font-weight: 800; color: #1a2f55; margin-top: 1px; }
-.ch-card-body { padding: 12px 18px; }
 
-/* Stage status rows */
-.stage-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #f8f8f6; }
+/* ── PERF HEADLINE ── */
+.perf-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #f0f2f5; border-bottom: 1px solid #e4e8ee; flex-shrink: 0; }
+.perf-metric { background: #fff; padding: 10px 14px; }
+.perf-metric .pm-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #aaa; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.perf-metric .pm-val { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+.perf-metric .pm-abs { font-size: 10px; color: #888; margin-top: 4px; }
+.perf-metric .pm-tgt { font-size: 9px; color: #bbb; margin-top: 2px; }
+
+/* ── FUNNEL (Perf — with targets) ── */
+.stage-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #f8f8f6; }
 .stage-row:last-of-type { border-bottom: none; }
-.stage-row .s-name { font-size: 11px; color: #666; width: 84px; flex-shrink: 0; }
+.stage-row .s-name { font-size: 11px; color: #666; width: 80px; flex-shrink: 0; }
 .stage-row .s-bar-wrap { flex: 1; height: 5px; background: #f0f0ec; border-radius: 3px; overflow: hidden; }
 .stage-row .s-bar { height: 100%; border-radius: 3px; }
-.stage-row .s-nums { font-size: 11px; width: 70px; text-align: right; flex-shrink: 0; color: #666; }
+.stage-row .s-nums { font-size: 11px; width: 66px; text-align: right; flex-shrink: 0; color: #666; }
 .stage-row .s-chip { flex-shrink: 0; }
 
-/* CPL / CAC row */
-.cost-row-ch { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; }
-.cost-item { flex: 1; }
-.cost-item .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; }
-.cost-item .vals { display: flex; align-items: baseline; gap: 5px; margin-top: 2px; }
-.cost-item .actual { font-size: 14px; font-weight: 800; }
-.cost-item .target { font-size: 11px; color: #bbb; }
+/* ── FUNNEL (simple — no targets) ── */
+.f-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid #f5f5f3; }
+.f-row:last-of-type { border-bottom: none; }
+.f-row .f-name { font-size: 11px; color: #888; width: 80px; flex-shrink: 0; }
+.f-row .f-bar-wrap { flex: 1; height: 6px; background: #f0f2f5; border-radius: 3px; overflow: hidden; }
+.f-row .f-bar { height: 100%; border-radius: 3px; }
+.f-row .f-count { font-size: 12px; font-weight: 700; color: #1a2f55; width: 50px; text-align: right; flex-shrink: 0; }
+.f-row .f-pct { font-size: 10px; color: #c0c4cc; width: 44px; text-align: right; flex-shrink: 0; }
+
+/* ── COST METRICS ── */
+.cost-footer { border-top: 1px dashed #eee; margin-top: 10px; padding-top: 10px; display: flex; gap: 10px; }
+.cost-tile { flex: 1; background: #f8f9fb; border-radius: 8px; padding: 10px 12px; }
+.cost-tile .ct-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; margin-bottom: 5px; }
+.cost-tile .ct-val { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+.cost-tile .ct-sub { font-size: 10px; color: #aaa; margin-top: 3px; }
+.cost-tile .ct-tgt { font-size: 9px; color: #ccc; margin-top: 1px; }
+
+/* ── CONVERSION FOOTER (Perf bottom) ── */
+.conv-footer { border-top: 1px dashed #eee; margin-top: 10px; padding-top: 10px; display: flex; gap: 12px; }
+.conv-item { flex: 1; }
+.conv-item .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; }
+.conv-item .ci-vals { display: flex; align-items: baseline; gap: 5px; margin-top: 3px; }
+.conv-item .ci-act { font-size: 14px; font-weight: 800; }
+.conv-item .ci-abs { font-size: 11px; color: #aaa; }
+.conv-item .ci-tgt { font-size: 10px; color: #bbb; margin-top: 2px; }
 
 /* ── CHIPS ── */
 .chip { border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 700; white-space: nowrap; display: inline-block; }
-.chip-on  { background: #e8f5e8; color: #1a7a3a; }
-.chip-beh { background: #fff4e0; color: #8a5c00; }
-.chip-risk{ background: #fde8e8; color: #c0392b; }
-.chip-na  { background: #f0f0ec; color: #bbb; }
-
-/* ── PERF HEADLINE METRICS ── */
-.perf-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: #f0f2f5; border-bottom: 1px solid #e4e8ee; }
-.perf-metric { background: #fff; padding: 10px 12px; }
-.perf-metric .pm-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #aaa; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.perf-metric .pm-pct { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
-.perf-metric .pm-abs { font-size: 11px; color: #888; margin-top: 4px; }
-.perf-metric .pm-tgt { font-size: 10px; color: #bbb; margin-top: 2px; }
+.chip-on   { background: #e8f5e8; color: #1a7a3a; }
+.chip-beh  { background: #fff4e0; color: #8a5c00; }
+.chip-risk { background: #fde8e8; color: #c0392b; }
+.chip-na   { background: #f0f0ec; color: #bbb; }
 
 /* ── ALERTS ── */
 .alert-bar { background: #fff; border-radius: 12px; border: 1px solid #e4e8ee; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -108,30 +122,43 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; c
 .tag-risk { background: #fde8e8; color: #c0392b; }
 .tag-beh  { background: #fff4e0; color: #8a5c00; }
 .tag-ok   { background: #e8f5e8; color: #1a7a3a; font-weight: 400; font-style: italic; }
+
+/* ── REGION SECTION ── */
+.region-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.region-panel { padding: 18px 24px; }
+.region-panel + .region-panel { border-left: 1px solid #f0f2f5; }
+.region-panel h4 { font-size: 12px; font-weight: 700; color: #1a2f55; margin-bottom: 14px; }
+.rr { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+.rr .r-name { font-size: 11px; color: #555; width: 120px; flex-shrink: 0; }
+.rr .r-bar-wrap { flex: 1; height: 7px; background: #f0f2f5; border-radius: 4px; overflow: hidden; }
+.rr .r-bar { height: 100%; border-radius: 4px; }
+.rr .r-stat { font-size: 11px; font-weight: 600; color: #444; width: 42px; text-align: right; flex-shrink: 0; }
+.rr .r-pct { font-size: 10px; color: #bbb; width: 34px; text-align: right; flex-shrink: 0; }
 </style>
 </head>
 <body>
 
 <script>
-/* ═══════════════ CONSTANTS ══════════════════════════════════ */
+/* ════════════════ CONSTANTS ════════════════════════════ */
 const MONTHS   = ['Sep-26','Oct-26','Nov-26','Dec-26','Jan-27','Feb-27','Mar-27','Apr-27','May-27','Jun-27','Jul-27','Aug-27'];
 const CHANNELS = ['Perf','Influencer','B2B','Referral','Social Media','Organic'];
 const STAGES   = ['Leads','Application','App Submits','Tetr Trials','Interviews','Offers','Admits'];
 const LAST_IDX = 2; // Nov-26
 const MW = [0.10,0.09,0.08,0.07,0.10,0.09,0.08,0.08,0.08,0.07,0.08,0.08];
+// perf=full tracking, cpl_cac=Influencer, cac=B2B, simple=Referral/Social/Organic
+const CH_MODE = ['perf','cpl_cac','cac','simple','simple','simple'];
+// Bar accent colours for simple channels
+const CH_COLOR = ['#1a2f55','#7c5cbf','#1e8a6e','#c47b1e','#c0392b','#2980b9'];
 
 const PERF = {
-  goodCountryTgt: 0.85,
-  goodCountryAct: 0.60,
-  leadsToSubmitTgt: 0.08,
-  submitsToOffersTgt: 0.09,
+  goodCountryTgt: 0.85, goodCountryAct: 0.60,
+  leadsToSubmitTgt: 0.08, submitsToOffersTgt: 0.09,
 };
 
-/* ═══════════════ PROGRAM DATA ══════════════════════════════
-   NOTE: UG / PG / Exec figures are placeholder proportional
-   splits (50% / 35% / 15% of Overall). Replace with actual
-   per-program data when available.
-══════════════════════════════════════════════════════════════ */
+/* ════════════════ PROGRAM DATA ═════════════════════════
+   UG / PG / Exec are placeholder proportional splits.
+   Replace with actual per-program data when available.
+═════════════════════════════════════════════════════════ */
 const PROG_DATA = {
 
   overall: {
@@ -148,26 +175,58 @@ const PROG_DATA = {
     },
     ACT_M: {
       'Leads':       [1430,1280,1630,null,null,null,null,null,null,null,null,null],
-      'Application': [576, 510, 669, null,null,null,null,null,null,null,null,null],
-      'App Submits': [384, 345, 436, null,null,null,null,null,null,null,null,null],
-      'Tetr Trials': [195, 180, 225, null,null,null,null,null,null,null,null,null],
-      'Interviews':  [114, 103, 127, null,null,null,null,null,null,null,null,null],
-      'Offers':      [68,  62,  77,  null,null,null,null,null,null,null,null,null],
-      'Admits':      [45,  41,  67,  null,null,null,null,null,null,null,null,null],
+      'Application': [576,510,669,null,null,null,null,null,null,null,null,null],
+      'App Submits': [384,345,436,null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [195,180,225,null,null,null,null,null,null,null,null,null],
+      'Interviews':  [114,103,127,null,null,null,null,null,null,null,null,null],
+      'Offers':      [68,62,77,null,null,null,null,null,null,null,null,null],
+      'Admits':      [45,41,67,null,null,null,null,null,null,null,null,null],
     },
     ACT_CH: {
       'Leads':       [1300,1100,330,520,690,400],
-      'Application': [540, 390, 155,245,255,170],
-      'App Submits': [360, 255, 115,185,170,130],
-      'Tetr Trials': [195, 140, 58, 95, 80, 72],
-      'Interviews':  [112, 78,  38, 62, 45, 46],
-      'Offers':      [62,  44,  25, 41, 26, 31],
-      'Admits':      [41,  29,  17, 28, 16, 22],
+      'Application': [540,390,155,245,255,170],
+      'App Submits': [360,255,115,185,170,130],
+      'Tetr Trials': [195,140,58,95,80,72],
+      'Interviews':  [112,78,38,62,45,46],
+      'Offers':      [62,44,25,41,26,31],
+      'Admits':      [41,29,17,28,16,22],
     },
-    CPL_T: [12, 26, 39, 10, 30, 0],
-    CAC_T: [1000,683,524,146,756,98],
-    CPL_A: [25, 28, 42, 11, 35, 0],
-    CAC_A: [600,720,560,155,820,105],
+    CPL_T: [12,26,0,0,0,0],
+    CAC_T: [10000,683,524,0,0,0],
+    CPL_A: [25,28,0,0,0,0],
+    CAC_A: [600,720,560,0,0,0],
+    regions: {
+      leads: [
+        { name:'South Asia',    count:521  },
+        { name:'Europe',        count:130  },
+        { name:'Africa',        count:87   },
+        { name:'Latin America', count:43   },
+        { name:'South America', count:43   },
+        { name:'Oceania',       count:43   },
+        { name:'Middle East',   count:347  },
+        { name:'North America', count:87   },
+        { name:'Southeast Asia',count:260  },
+        { name:'China',         count:87   },
+        { name:'India',         count:2431 },
+        { name:'East Asia',     count:87   },
+        { name:'USA',           count:174  },
+      ],
+      admits: [
+        { name:'South Asia',    count:18 },
+        { name:'Europe',        count:6  },
+        { name:'Africa',        count:3  },
+        { name:'Latin America', count:2  },
+        { name:'South America', count:1  },
+        { name:'Oceania',       count:1  },
+        { name:'Middle East',   count:12 },
+        { name:'North America', count:3  },
+        { name:'Southeast Asia',count:9  },
+        { name:'China',         count:3  },
+        { name:'India',         count:84 },
+        { name:'East Asia',     count:3  },
+        { name:'USA',           count:8  },
+      ],
+    },
   },
 
   ug: {
@@ -186,24 +245,56 @@ const PROG_DATA = {
       'Leads':       [715,640,815,null,null,null,null,null,null,null,null,null],
       'Application': [288,255,335,null,null,null,null,null,null,null,null,null],
       'App Submits': [192,173,218,null,null,null,null,null,null,null,null,null],
-      'Tetr Trials': [98, 90, 113,null,null,null,null,null,null,null,null,null],
-      'Interviews':  [57, 52, 64, null,null,null,null,null,null,null,null,null],
-      'Offers':      [34, 31, 39, null,null,null,null,null,null,null,null,null],
-      'Admits':      [23, 21, 34, null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [98,90,113,null,null,null,null,null,null,null,null,null],
+      'Interviews':  [57,52,64,null,null,null,null,null,null,null,null,null],
+      'Offers':      [34,31,39,null,null,null,null,null,null,null,null,null],
+      'Admits':      [23,21,34,null,null,null,null,null,null,null,null,null],
     },
     ACT_CH: {
       'Leads':       [650,550,165,260,345,200],
-      'Application': [270,195,78, 123,128,85],
-      'App Submits': [180,128,58, 93, 85, 65],
-      'Tetr Trials': [98, 70, 29, 48, 40, 36],
-      'Interviews':  [56, 39, 19, 31, 23, 23],
-      'Offers':      [31, 22, 13, 21, 13, 16],
-      'Admits':      [21, 15, 9,  14, 8,  11],
+      'Application': [270,195,78,123,128,85],
+      'App Submits': [180,128,58,93,85,65],
+      'Tetr Trials': [98,70,29,48,40,36],
+      'Interviews':  [56,39,19,31,23,23],
+      'Offers':      [31,22,13,21,13,16],
+      'Admits':      [21,15,9,14,8,11],
     },
-    CPL_T: [12, 26, 38, 10, 29, 0],
-    CAC_T: [980,660,510,140,740,95],
-    CPL_A: [24, 28, 41, 11, 34, 0],
-    CAC_A: [580,700,540,150,800,102],
+    CPL_T: [12,26,0,0,0,0],
+    CAC_T: [10000,660,510,0,0,0],
+    CPL_A: [24,28,0,0,0,0],
+    CAC_A: [580,700,540,0,0,0],
+    regions: {
+      leads: [
+        { name:'South Asia',    count:261  },
+        { name:'Europe',        count:65   },
+        { name:'Africa',        count:44   },
+        { name:'Latin America', count:22   },
+        { name:'South America', count:22   },
+        { name:'Oceania',       count:22   },
+        { name:'Middle East',   count:174  },
+        { name:'North America', count:44   },
+        { name:'Southeast Asia',count:130  },
+        { name:'China',         count:44   },
+        { name:'India',         count:1216 },
+        { name:'East Asia',     count:44   },
+        { name:'USA',           count:87   },
+      ],
+      admits: [
+        { name:'South Asia',    count:9  },
+        { name:'Europe',        count:3  },
+        { name:'Africa',        count:2  },
+        { name:'Latin America', count:1  },
+        { name:'South America', count:1  },
+        { name:'Oceania',       count:1  },
+        { name:'Middle East',   count:6  },
+        { name:'North America', count:2  },
+        { name:'Southeast Asia',count:5  },
+        { name:'China',         count:2  },
+        { name:'India',         count:42 },
+        { name:'East Asia',     count:2  },
+        { name:'USA',           count:4  },
+      ],
+    },
   },
 
   pg: {
@@ -212,81 +303,142 @@ const PROG_DATA = {
     ANN: {
       'Leads':       [840,630,210,315,420,210],
       'Application': [378,252,105,158,168,105],
-      'App Submits': [265,176,84, 126,118,84],
-      'Tetr Trials': [132,88, 42, 63, 59, 42],
-      'Interviews':  [79, 53, 29, 44, 35, 29],
-      'Offers':      [48, 32, 21, 31, 21, 21],
-      'Admits':      [33, 22, 15, 22, 15, 15],
+      'App Submits': [265,176,84,126,118,84],
+      'Tetr Trials': [132,88,42,63,59,42],
+      'Interviews':  [79,53,29,44,35,29],
+      'Offers':      [48,32,21,31,21,21],
+      'Admits':      [33,22,15,22,15,15],
     },
     ACT_M: {
       'Leads':       [501,448,571,null,null,null,null,null,null,null,null,null],
       'Application': [202,179,234,null,null,null,null,null,null,null,null,null],
       'App Submits': [134,121,153,null,null,null,null,null,null,null,null,null],
-      'Tetr Trials': [68, 63, 79, null,null,null,null,null,null,null,null,null],
-      'Interviews':  [40, 36, 44, null,null,null,null,null,null,null,null,null],
-      'Offers':      [24, 22, 27, null,null,null,null,null,null,null,null,null],
-      'Admits':      [16, 14, 23, null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [68,63,79,null,null,null,null,null,null,null,null,null],
+      'Interviews':  [40,36,44,null,null,null,null,null,null,null,null,null],
+      'Offers':      [24,22,27,null,null,null,null,null,null,null,null,null],
+      'Admits':      [16,14,23,null,null,null,null,null,null,null,null,null],
     },
     ACT_CH: {
       'Leads':       [455,385,116,182,242,140],
-      'Application': [189,137,54, 86, 89, 60],
-      'App Submits': [126,89, 40, 65, 60, 46],
-      'Tetr Trials': [68, 49, 20, 33, 28, 25],
-      'Interviews':  [39, 27, 13, 22, 16, 16],
-      'Offers':      [22, 15, 9,  14, 9,  11],
-      'Admits':      [14, 10, 6,  10, 6,  8],
+      'Application': [189,137,54,86,89,60],
+      'App Submits': [126,89,40,65,60,46],
+      'Tetr Trials': [68,49,20,33,28,25],
+      'Interviews':  [39,27,13,22,16,16],
+      'Offers':      [22,15,9,14,9,11],
+      'Admits':      [14,10,6,10,6,8],
     },
-    CPL_T: [15, 29, 42, 12, 33, 0],
-    CAC_T: [1200,820,630,175,910,118],
-    CPL_A: [20, 30, 44, 13, 36, 0],
-    CAC_A: [700,840,650,180,970,125],
+    CPL_T: [15,29,0,0,0,0],
+    CAC_T: [10000,820,630,0,0,0],
+    CPL_A: [20,30,0,0,0,0],
+    CAC_A: [700,840,650,0,0,0],
+    regions: {
+      leads: [
+        { name:'South Asia',    count:182 },
+        { name:'Europe',        count:46  },
+        { name:'Africa',        count:30  },
+        { name:'Latin America', count:15  },
+        { name:'South America', count:15  },
+        { name:'Oceania',       count:15  },
+        { name:'Middle East',   count:121 },
+        { name:'North America', count:30  },
+        { name:'Southeast Asia',count:91  },
+        { name:'China',         count:30  },
+        { name:'India',         count:851 },
+        { name:'East Asia',     count:30  },
+        { name:'USA',           count:61  },
+      ],
+      admits: [
+        { name:'South Asia',    count:6  },
+        { name:'Europe',        count:2  },
+        { name:'Africa',        count:1  },
+        { name:'Latin America', count:1  },
+        { name:'South America', count:0  },
+        { name:'Oceania',       count:0  },
+        { name:'Middle East',   count:4  },
+        { name:'North America', count:1  },
+        { name:'Southeast Asia',count:3  },
+        { name:'China',         count:1  },
+        { name:'India',         count:29 },
+        { name:'East Asia',     count:1  },
+        { name:'USA',           count:3  },
+      ],
+    },
   },
 
   exec: {
     label: 'Executive',
     ANN_ALL: { 'Leads':1125,'Application':500,'App Submits':365,'Tetr Trials':183,'Interviews':116,'Offers':74,'Admits':52 },
     ANN: {
-      'Leads':       [360,270,90, 135,180,90],
-      'Application': [162,108,45, 68, 72, 45],
-      'App Submits': [113,76, 36, 54, 50, 36],
-      'Tetr Trials': [57, 38, 18, 27, 25, 18],
-      'Interviews':  [34, 22, 13, 19, 15, 13],
-      'Offers':      [20, 13, 8,  13, 9,  8],
-      'Admits':      [14, 10, 6,  9,  6,  6],
+      'Leads':       [360,270,90,135,180,90],
+      'Application': [162,108,45,68,72,45],
+      'App Submits': [113,76,36,54,50,36],
+      'Tetr Trials': [57,38,18,27,25,18],
+      'Interviews':  [34,22,13,19,15,13],
+      'Offers':      [20,13,8,13,9,8],
+      'Admits':      [14,10,6,9,6,6],
     },
     ACT_M: {
       'Leads':       [215,192,245,null,null,null,null,null,null,null,null,null],
-      'Application': [86, 77, 100,null,null,null,null,null,null,null,null,null],
-      'App Submits': [58, 52, 65, null,null,null,null,null,null,null,null,null],
-      'Tetr Trials': [29, 27, 34, null,null,null,null,null,null,null,null,null],
-      'Interviews':  [17, 15, 19, null,null,null,null,null,null,null,null,null],
-      'Offers':      [10, 9,  12, null,null,null,null,null,null,null,null,null],
-      'Admits':      [7,  6,  10, null,null,null,null,null,null,null,null,null],
+      'Application': [86,77,100,null,null,null,null,null,null,null,null,null],
+      'App Submits': [58,52,65,null,null,null,null,null,null,null,null,null],
+      'Tetr Trials': [29,27,34,null,null,null,null,null,null,null,null,null],
+      'Interviews':  [17,15,19,null,null,null,null,null,null,null,null,null],
+      'Offers':      [10,9,12,null,null,null,null,null,null,null,null,null],
+      'Admits':      [7,6,10,null,null,null,null,null,null,null,null,null],
     },
     ACT_CH: {
-      'Leads':       [195,165,50, 78, 104,60],
-      'Application': [81, 59, 23, 37, 38, 26],
-      'App Submits': [54, 38, 17, 28, 26, 20],
-      'Tetr Trials': [29, 21, 9,  14, 12, 11],
-      'Interviews':  [17, 12, 6,  9,  7,  7],
-      'Offers':      [9,  7,  4,  6,  4,  5],
-      'Admits':      [6,  4,  3,  4,  2,  4],
+      'Leads':       [195,165,50,78,104,60],
+      'Application': [81,59,23,37,38,26],
+      'App Submits': [54,38,17,28,26,20],
+      'Tetr Trials': [29,21,9,14,12,11],
+      'Interviews':  [17,12,6,9,7,7],
+      'Offers':      [9,7,4,6,4,5],
+      'Admits':      [6,4,3,4,2,4],
     },
-    CPL_T: [20, 35, 50, 15, 40, 0],
-    CAC_T: [1800,1200,950,250,1400,180],
-    CPL_A: [30, 40, 55, 17, 45, 0],
-    CAC_A: [1050,1400,1100,320,1700,220],
+    CPL_T: [20,35,0,0,0,0],
+    CAC_T: [10000,1200,950,0,0,0],
+    CPL_A: [30,40,0,0,0,0],
+    CAC_A: [1050,1400,1100,0,0,0],
+    regions: {
+      leads: [
+        { name:'South Asia',    count:78  },
+        { name:'Europe',        count:20  },
+        { name:'Africa',        count:13  },
+        { name:'Latin America', count:7   },
+        { name:'South America', count:6   },
+        { name:'Oceania',       count:6   },
+        { name:'Middle East',   count:52  },
+        { name:'North America', count:13  },
+        { name:'Southeast Asia',count:39  },
+        { name:'China',         count:13  },
+        { name:'India',         count:365 },
+        { name:'East Asia',     count:13  },
+        { name:'USA',           count:26  },
+      ],
+      admits: [
+        { name:'South Asia',    count:3  },
+        { name:'Europe',        count:1  },
+        { name:'Africa',        count:0  },
+        { name:'Latin America', count:0  },
+        { name:'South America', count:0  },
+        { name:'Oceania',       count:0  },
+        { name:'Middle East',   count:2  },
+        { name:'North America', count:0  },
+        { name:'Southeast Asia',count:1  },
+        { name:'China',         count:0  },
+        { name:'India',         count:13 },
+        { name:'East Asia',     count:0  },
+        { name:'USA',           count:1  },
+      ],
+    },
   },
 };
 
-/* ═══════════════ HELPERS ═══════════════════════════════ */
+/* ════════════════ HELPERS ════════════════════════════ */
 function fmtN(n){ return n==null?'—':Math.round(n).toLocaleString(); }
 function fmtU(n){ return n===0?'—':'$'+Math.round(n).toLocaleString(); }
 function pct(a,t){ return t>0?Math.round(a/t*100):null; }
-function statusOf(a,t){
-  if(!t||a==null) return null;
-  const r=a/t; return r>=0.95?'on':r>=0.8?'beh':'risk';
-}
+function statusOf(a,t){ if(!t||a==null)return null; const r=a/t; return r>=0.95?'on':r>=0.8?'beh':'risk'; }
 function chip(a,t){
   const s=statusOf(a,t);
   if(!s) return '<span class="chip chip-na">—</span>';
@@ -295,25 +447,16 @@ function chip(a,t){
   return '<span class="chip chip-risk">⚠ At Risk</span>';
 }
 function barCol(s){ return s==='on'?'#2ecc71':s==='beh'?'#f39c12':s==='risk'?'#e74c3c':'#ccc'; }
-function eoy(a){ return Math.round(a / ((LAST_IDX+1)/12)); }
-
-function makeCtxFns(ctx) {
-  const ytdAct = (stage) => ctx.ACT_M[stage].slice(0, LAST_IDX+1).reduce((s,v) => s+(v||0), 0);
-  const ytdTgtAll = (stage) => {
-    let t = 0;
-    for (let m=0; m<=LAST_IDX; m++) t += ctx.ANN_ALL[stage] * MW[m];
-    return Math.round(t);
-  };
-  const ytdTgtCh = (stage, ci) => {
-    let t = 0;
-    for (let m=0; m<=LAST_IDX; m++) t += ctx.ANN[stage][ci] * MW[m];
-    return Math.round(t);
-  };
-  return { ytdAct, ytdTgtAll, ytdTgtCh };
+function eoy(a){ return Math.round(a/((LAST_IDX+1)/12)); }
+function makeCtxFns(ctx){
+  const ytdAct=st=>ctx.ACT_M[st].slice(0,LAST_IDX+1).reduce((s,v)=>s+(v||0),0);
+  const ytdTgtAll=st=>{ let t=0; for(let m=0;m<=LAST_IDX;m++) t+=ctx.ANN_ALL[st]*MW[m]; return Math.round(t); };
+  const ytdTgtCh=(st,ci)=>{ let t=0; for(let m=0;m<=LAST_IDX;m++) t+=ctx.ANN[st][ci]*MW[m]; return Math.round(t); };
+  return {ytdAct,ytdTgtAll,ytdTgtCh};
 }
 </script>
 
-<!-- ════════════════════ TOPBAR ════════════════════════ -->
+<!-- ════════════════ TOPBAR ════════════════ -->
 <div class="topbar">
   <h1>Tetr Admissions Tracker</h1>
   <span class="yr-badge">AY 2026–27</span>
@@ -322,8 +465,6 @@ function makeCtxFns(ctx) {
 </div>
 
 <div class="layout">
-
-  <!-- SIDEBAR TABS -->
   <aside class="sidebar">
     <div class="sidebar-label">Program</div>
     <button class="tab-btn active" data-prog="overall">Overall</button>
@@ -332,117 +473,94 @@ function makeCtxFns(ctx) {
     <button class="tab-btn" data-prog="exec">Executive</button>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <div class="main-content">
     <div class="page">
-
-      <!-- METRIC STRIP -->
       <div class="metric-strip" id="metric-strip"></div>
 
-      <!-- TWO CHARTS -->
       <div class="two-col">
         <div class="card">
-          <div class="card-head">
-            <h3>Current Enrollments</h3>
-            <div class="sub">YTD admits per stage vs annual target</div>
-          </div>
+          <div class="card-head"><h3>Current Enrollments</h3><div class="sub">YTD actuals per stage vs annual target</div></div>
           <div class="card-body"><svg id="chart-current" class="chart-svg"></svg></div>
         </div>
         <div class="card">
-          <div class="card-head">
-            <h3>EOY Projection</h3>
-            <div class="sub">Projected year-end vs annual target at current pace</div>
-          </div>
+          <div class="card-head"><h3>EOY Projection</h3><div class="sub">Run-rate projection vs annual target</div></div>
           <div class="card-body"><svg id="chart-proj" class="chart-svg"></svg></div>
         </div>
       </div>
 
-      <!-- ALERTS -->
       <div class="alert-bar" id="alert-bar"></div>
 
-      <!-- CHANNEL BREAKDOWN -->
-      <div class="funnel-section">
+      <div class="section-wrap">
         <div class="sec-head">
           <h2>Channel Breakdown</h2>
-          <span class="sub">YTD actuals vs YTD targets · CPL &amp; CAC in USD</span>
+          <span class="sub">Perf: full tracking · Influencer: CPL &amp; CAC · B2B: CAC · Others: funnel view only</span>
         </div>
         <div style="padding:20px 24px">
           <div class="channels-grid" id="channels-grid"></div>
         </div>
       </div>
 
+      <div class="section-wrap">
+        <div class="sec-head">
+          <h2>Regional Distribution</h2>
+          <span class="sub">YTD · placeholder data — replace with actuals</span>
+        </div>
+        <div class="region-grid" id="region-grid"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════ RENDER ════════════════════════ -->
+<!-- ════════════════ RENDER ════════════════ -->
 <script>
-document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX] + '  ·  ' + (LAST_IDX+1) + ' of 12 months';
+document.getElementById('as-of-lbl').textContent = MONTHS[LAST_IDX]+'  ·  '+(LAST_IDX+1)+' of 12 months';
 
-/* ── SVG CHART HELPER ── */
-function makeSVG(id, rows) {
-  const LW = 90, RW = 110, BH = 28, GAP = 12;
-  const W = 440, H = rows.length * (BH + GAP) - GAP + 4;
-  const el = document.getElementById(id);
-  el.setAttribute('viewBox', `0 0 ${LW+W+RW} ${H}`);
-  el.style.height = (H * 0.9) + 'px';
-  let svg = '';
-  rows.forEach(({label, actual, target, color, note}, i) => {
-    const y = i * (BH + GAP);
-    const barW = target > 0 ? Math.min(actual / target, 1.25) * W : 0;
-    const tgtX = LW + W;
-    svg += `<rect x="${LW}" y="${y}" width="${W}" height="${BH}" rx="4" fill="#f0f2f5"/>`;
-    svg += `<rect x="${LW}" y="${y}" width="${Math.round(barW)}" height="${BH}" rx="4" fill="${color}" opacity="0.85"/>`;
-    svg += `<line x1="${tgtX}" y1="${y-3}" x2="${tgtX}" y2="${y+BH+3}" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>`;
-    svg += `<text x="${LW-8}" y="${y+BH/2+4}" text-anchor="end" font-size="11" font-weight="600" fill="#555" font-family="system-ui">${label}</text>`;
-    svg += `<text x="${tgtX+8}" y="${y+BH/2+4}" font-size="11" font-weight="700" fill="${color}" font-family="system-ui">${note}</text>`;
+function makeSVG(id, rows){
+  const LW=90,RW=110,BH=28,GAP=12,W=440,H=rows.length*(BH+GAP)-GAP+4;
+  const el=document.getElementById(id);
+  el.setAttribute('viewBox',`0 0 ${LW+W+RW} ${H}`);
+  el.style.height=(H*0.9)+'px';
+  let svg='';
+  rows.forEach(({label,actual,target,color,note},i)=>{
+    const y=i*(BH+GAP), barW=target>0?Math.min(actual/target,1.25)*W:0, tgtX=LW+W;
+    svg+=`<rect x="${LW}" y="${y}" width="${W}" height="${BH}" rx="4" fill="#f0f2f5"/>`;
+    svg+=`<rect x="${LW}" y="${y}" width="${Math.round(barW)}" height="${BH}" rx="4" fill="${color}" opacity="0.85"/>`;
+    svg+=`<line x1="${tgtX}" y1="${y-3}" x2="${tgtX}" y2="${y+BH+3}" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg+=`<text x="${LW-8}" y="${y+BH/2+4}" text-anchor="end" font-size="11" font-weight="600" fill="#555" font-family="system-ui">${label}</text>`;
+    svg+=`<text x="${tgtX+8}" y="${y+BH/2+4}" font-size="11" font-weight="700" fill="${color}" font-family="system-ui">${note}</text>`;
   });
-  svg += `<text x="${LW+W+2}" y="${H+3}" font-size="9" fill="#bbb" font-family="system-ui">▲ annual target</text>`;
-  el.innerHTML = svg;
+  svg+=`<text x="${LW+W+2}" y="${H+3}" font-size="9" fill="#bbb" font-family="system-ui">▲ annual target</text>`;
+  el.innerHTML=svg;
 }
 
-/* ── MAIN RENDER ── */
-function renderDashboard(progKey) {
-  const ctx = PROG_DATA[progKey];
-  const { ytdAct, ytdTgtAll, ytdTgtCh } = makeCtxFns(ctx);
+function renderDashboard(progKey){
+  const ctx=PROG_DATA[progKey];
+  const {ytdAct,ytdTgtAll,ytdTgtCh}=makeCtxFns(ctx);
 
-  // Metric strip
-  const admA  = ytdAct('Admits'),      admT  = ytdTgtAll('Admits');
-  const leadA = ytdAct('Leads'),       leadT = ytdTgtAll('Leads');
-  const offA  = ytdAct('Offers');
-  const appA  = ytdAct('Application');
-  const submA = ytdAct('App Submits');
-  const ann   = ctx.ANN_ALL['Admits'];
-  const proj  = eoy(admA);
-  const varPct = admT>0 ? Math.round((admA-admT)/admT*100) : 0;
-  const varBadge = varPct>=0
-    ? `<span class="badge badge-green">+${varPct}% vs target</span>`
-    : `<span class="badge badge-red">${varPct}% vs target</span>`;
-  const projBadge = proj>=ann
-    ? `<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`
-    : `<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
-  const conv    = offA>0  ? (admA/offA*100).toFixed(1)+'%'  : '—';
-  const appConv = appA>0  ? (submA/appA*100).toFixed(1)+'%' : '—';
+  /* ── Metric strip ── */
+  const admA=ytdAct('Admits'), admT=ytdTgtAll('Admits');
+  const leadA=ytdAct('Leads'), leadT=ytdTgtAll('Leads');
+  const offA=ytdAct('Offers'), appA=ytdAct('Application'), submA=ytdAct('App Submits');
+  const ann=ctx.ANN_ALL['Admits'], proj=eoy(admA);
+  const varPct=admT>0?Math.round((admA-admT)/admT*100):0;
+  const varBadge=varPct>=0?`<span class="badge badge-green">+${varPct}% vs target</span>`:`<span class="badge badge-red">${varPct}% vs target</span>`;
+  const projBadge=proj>=ann?`<span class="badge badge-green">+${fmtN(proj-ann)} above target</span>`:`<span class="badge badge-red">${fmtN(proj-ann)} below target</span>`;
 
-  document.getElementById('metric-strip').innerHTML = `
+  document.getElementById('metric-strip').innerHTML=`
     <div class="metric-item">
-      <div class="lbl">Admits YTD</div>
-      <div class="val">${fmtN(admA)}</div>
+      <div class="lbl">Admits YTD</div><div class="val">${fmtN(admA)}</div>
       <div class="sub">of ${fmtN(admT)} YTD target ${varBadge}</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
-      <div class="lbl">Leads YTD</div>
-      <div class="val">${fmtN(leadA)}</div>
+      <div class="lbl">Leads YTD</div><div class="val">${fmtN(leadA)}</div>
       <div class="sub">of ${fmtN(leadT)} YTD target</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
-      <div class="lbl">Offer → Admit Conv</div>
-      <div class="val">${conv}</div>
+      <div class="lbl">Offer → Admit Conv</div><div class="val">${offA>0?(admA/offA*100).toFixed(1)+'%':'—'}</div>
       <div class="sub">${fmtN(admA)} of ${fmtN(offA)} offers</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
-      <div class="lbl">App Started → Submit</div>
-      <div class="val">${appConv}</div>
+      <div class="lbl">App Started → Submit</div><div class="val">${appA>0?(submA/appA*100).toFixed(1)+'%':'—'}</div>
       <div class="sub">${fmtN(submA)} of ${fmtN(appA)} apps</div>
     </div>
     <div class="metric-item" style="border-left:1px solid rgba(255,255,255,0.1)">
@@ -451,185 +569,245 @@ function renderDashboard(progKey) {
       <div class="sub">vs ${fmtN(ann)} annual ${projBadge}</div>
     </div>`;
 
-  // Chart 1: Current YTD
-  makeSVG('chart-current', STAGES.map(st => {
-    const a = ytdAct(st), t = ytdTgtAll(st), annSt = ctx.ANN_ALL[st];
-    const s = statusOf(a, t);
-    const p = annSt > 0 ? Math.round(a/annSt*100) : 0;
-    return { label: st, actual: a, target: annSt, color: barCol(s), note: `${fmtN(a)}  (${p}% of ${fmtN(annSt)})` };
+  /* ── Charts ── */
+  makeSVG('chart-current',STAGES.map(st=>{
+    const a=ytdAct(st),t=ytdTgtAll(st),annSt=ctx.ANN_ALL[st],s=statusOf(a,t);
+    return {label:st,actual:a,target:annSt,color:barCol(s),note:`${fmtN(a)}  (${annSt>0?Math.round(a/annSt*100):0}% of ${fmtN(annSt)})`};
+  }));
+  makeSVG('chart-proj',STAGES.map(st=>{
+    const a=ytdAct(st),annSt=ctx.ANN_ALL[st],pr=eoy(a),gap=pr-annSt;
+    return {label:st,actual:pr,target:annSt,color:pr>=annSt?'#27ae60':'#e74c3c',note:`${fmtN(pr)}  (${gap>=0?'+':''}${fmtN(gap)})`};
   }));
 
-  // Chart 2: EOY Projection
-  makeSVG('chart-proj', STAGES.map(st => {
-    const a = ytdAct(st), annSt = ctx.ANN_ALL[st];
-    const pr = eoy(a);
-    const color = pr >= annSt ? '#27ae60' : '#e74c3c';
-    const gap = pr - annSt;
-    const sign = gap >= 0 ? '+' : '';
-    return { label: st, actual: pr, target: annSt, color, note: `${fmtN(pr)}  (${sign}${fmtN(gap)})` };
-  }));
-
-  // Alerts
-  const reds = [], ambers = [];
-  STAGES.forEach(st => {
-    const a=ytdAct(st), t=ytdTgtAll(st), s=statusOf(a,t);
+  /* ── Alerts ── */
+  const reds=[],ambers=[];
+  STAGES.forEach(st=>{
+    const a=ytdAct(st),t=ytdTgtAll(st),s=statusOf(a,t);
     if(s==='risk') reds.push(`${st} at ${pct(a,t)}% of YTD target`);
     else if(s==='beh') ambers.push(`${st} at ${pct(a,t)}% of YTD target`);
   });
-  CHANNELS.forEach((ch,ci) => {
-    if(ctx.CAC_A[ci]>0&&ctx.CAC_T[ci]>0&&ctx.CAC_A[ci]/ctx.CAC_T[ci]>1.2)
-      reds.push(`${ch} CAC over budget (${fmtU(ctx.CAC_A[ci])} vs ${fmtU(ctx.CAC_T[ci])} target)`);
-    if(ctx.CPL_A[ci]>0&&ctx.CPL_T[ci]>0&&ctx.CPL_A[ci]/ctx.CPL_T[ci]>1.2)
-      ambers.push(`${ch} CPL over budget (${fmtU(ctx.CPL_A[ci])} vs ${fmtU(ctx.CPL_T[ci])} target)`);
+  [[0,'Perf'],[1,'Influencer'],[2,'B2B']].forEach(([i,name])=>{
+    if(ctx.CAC_A[i]>0&&ctx.CAC_T[i]>0&&ctx.CAC_A[i]/ctx.CAC_T[i]>1.2) reds.push(`${name} CAC over budget (${fmtU(ctx.CAC_A[i])} vs ${fmtU(ctx.CAC_T[i])} target)`);
+    if(ctx.CPL_A[i]>0&&ctx.CPL_T[i]>0&&ctx.CPL_A[i]/ctx.CPL_T[i]>1.2) ambers.push(`${name} CPL over budget (${fmtU(ctx.CPL_A[i])} vs ${fmtU(ctx.CPL_T[i])} target)`);
   });
-  const bar = document.getElementById('alert-bar');
-  bar.innerHTML = reds.length+ambers.length===0
-    ? '<span class="alert-label">Status</span><span class="alert-tag tag-ok">✓ Everything on track</span>'
-    : '<span class="alert-label">Needs attention</span>'
-      + reds.map(m=>`<span class="alert-tag tag-risk">⚠ ${m}</span>`).join('')
-      + ambers.map(m=>`<span class="alert-tag tag-beh">▼ ${m}</span>`).join('');
+  document.getElementById('alert-bar').innerHTML=reds.length+ambers.length===0
+    ?'<span class="alert-label">Status</span><span class="alert-tag tag-ok">✓ Everything on track</span>'
+    :'<span class="alert-label">Needs attention</span>'+reds.map(m=>`<span class="alert-tag tag-risk">⚠ ${m}</span>`).join('')+ambers.map(m=>`<span class="alert-tag tag-beh">▼ ${m}</span>`).join('');
 
-  // Channel cards
-  let html = '';
-  CHANNELS.forEach((ch, ci) => {
-    const admACh  = ctx.ACT_CH['Admits'][ci], admTCh = ytdTgtCh('Admits',ci);
-    const leadACh = ctx.ACT_CH['Leads'][ci];
-    const admColor = barCol(statusOf(admACh, admTCh));
+  /* ── Channel cards ── */
+  let html='';
+  CHANNELS.forEach((ch,ci)=>{
+    const mode=CH_MODE[ci], color=CH_COLOR[ci];
+    const leadACh=ctx.ACT_CH['Leads'][ci], admACh=ctx.ACT_CH['Admits'][ci];
+    const admTCh=ytdTgtCh('Admits',ci);
+    const admColor=mode==='perf'?barCol(statusOf(admACh,admTCh)):'#1a2f55';
 
-    let perfMetrics = '';
-    if (ci === 0) {
-      const submitsA = ctx.ACT_CH['App Submits'][0];
-      const offersA  = ctx.ACT_CH['Offers'][0];
-      const gcAct    = leadACh * PERF.goodCountryAct;
-      const gcActPct = Math.round(PERF.goodCountryAct * 100);
-      const gcTgtPct = Math.round(PERF.goodCountryTgt * 100);
-      const gcStatus = gcActPct >= gcTgtPct*0.95 ? 'on' : gcActPct >= gcTgtPct*0.80 ? 'beh' : 'risk';
-      const cplRatio  = ctx.CPL_T[0]>0 ? ctx.CPL_A[0]/ctx.CPL_T[0] : 1;
-      const cplStatus = cplRatio<=1.05?'on':cplRatio<=1.20?'beh':'risk';
-      const cacRatio  = ctx.CAC_T[0]>0 ? ctx.CAC_A[0]/ctx.CAC_T[0] : 1;
-      const cacStatus = cacRatio<=1.05?'on':cacRatio<=1.20?'beh':'risk';
-      const l2sAct    = leadACh>0 ? submitsA/leadACh : 0;
-      const l2sActPct = (l2sAct*100).toFixed(1);
-      const l2sTgtPct = (PERF.leadsToSubmitTgt*100).toFixed(0);
-      const l2sAbsT   = Math.round(leadACh*PERF.leadsToSubmitTgt);
-      const l2sStatus = l2sAct>=PERF.leadsToSubmitTgt*0.95?'on':l2sAct>=PERF.leadsToSubmitTgt*0.80?'beh':'risk';
-      const s2oAct    = submitsA>0 ? offersA/submitsA : 0;
-      const s2oActPct = (s2oAct*100).toFixed(1);
-      const s2oTgtPct = (PERF.submitsToOffersTgt*100).toFixed(0);
-      const s2oAbsT   = Math.round(submitsA*PERF.submitsToOffersTgt);
-      const s2oStatus = s2oAct>=PERF.submitsToOffersTgt*0.95?'on':s2oAct>=PERF.submitsToOffersTgt*0.80?'beh':'risk';
-      const c = (s) => barCol(s);
+    let inner='';
 
-      perfMetrics = `<div class="perf-metrics">
+    /* ── Perf ── */
+    if(mode==='perf'){
+      const sub=ctx.ACT_CH['App Submits'][0], off=ctx.ACT_CH['Offers'][0];
+      const gcPct=Math.round(PERF.goodCountryAct*100), gcTgt=Math.round(PERF.goodCountryTgt*100);
+      const gcSt=gcPct>=gcTgt*0.95?'on':gcPct>=gcTgt*0.80?'beh':'risk';
+      const cplR=ctx.CPL_T[0]>0?ctx.CPL_A[0]/ctx.CPL_T[0]:1, cplSt=cplR<=1.05?'on':cplR<=1.20?'beh':'risk';
+      const cacR=ctx.CAC_T[0]>0?ctx.CAC_A[0]/ctx.CAC_T[0]:1, cacSt=cacR<=1.05?'on':cacR<=1.20?'beh':'risk';
+      const l2s=leadACh>0?sub/leadACh:0, l2sSt=l2s>=PERF.leadsToSubmitTgt*0.95?'on':l2s>=PERF.leadsToSubmitTgt*0.80?'beh':'risk';
+      const s2o=sub>0?off/sub:0, s2oSt=s2o>=PERF.submitsToOffersTgt*0.95?'on':s2o>=PERF.submitsToOffersTgt*0.80?'beh':'risk';
+      const c=s=>barCol(s);
+
+      inner+=`<div class="perf-metrics">
         <div class="perf-metric">
           <div class="pm-label">Good Country</div>
-          <div class="pm-pct" style="color:${c(gcStatus)}">${gcActPct}%</div>
-          <div class="pm-abs">${fmtN(Math.round(gcAct))} of ${fmtN(leadACh)} leads</div>
-          <div class="pm-tgt">Target: ${gcTgtPct}% · ${fmtN(Math.round(leadACh*PERF.goodCountryTgt))}</div>
+          <div class="pm-val" style="color:${c(gcSt)}">${gcPct}%</div>
+          <div class="pm-abs">${fmtN(Math.round(leadACh*PERF.goodCountryAct))} of ${fmtN(leadACh)} leads</div>
+          <div class="pm-tgt">Target: ${gcTgt}% · ${fmtN(Math.round(leadACh*PERF.goodCountryTgt))}</div>
         </div>
         <div class="perf-metric">
           <div class="pm-label">CPL (USD)</div>
-          <div class="pm-pct" style="color:${c(cplStatus)}">${fmtU(ctx.CPL_A[0])}</div>
-          <div class="pm-abs">${Math.round(cplRatio*100)}% of target</div>
+          <div class="pm-val" style="color:${c(cplSt)}">${fmtU(ctx.CPL_A[0])}</div>
+          <div class="pm-abs">${Math.round(cplR*100)}% of target</div>
           <div class="pm-tgt">Target: ${fmtU(ctx.CPL_T[0])}</div>
         </div>
         <div class="perf-metric">
           <div class="pm-label">CAC (USD)</div>
-          <div class="pm-pct" style="color:${c(cacStatus)}">${fmtU(ctx.CAC_A[0])}</div>
-          <div class="pm-abs">${Math.round(cacRatio*100)}% of target</div>
+          <div class="pm-val" style="color:${c(cacSt)}">${fmtU(ctx.CAC_A[0])}</div>
+          <div class="pm-abs">${Math.round(cacR*100)}% of target</div>
           <div class="pm-tgt">Target: ${fmtU(ctx.CAC_T[0])}</div>
         </div>
       </div>`;
 
-      window._perfFooter = `<div class="cost-row-ch" style="gap:16px">
-        <div class="cost-item">
-          <div class="lbl">Leads → App Submits</div>
-          <div class="vals">
-            <span class="actual" style="color:${c(l2sStatus)}">${l2sActPct}%</span>
-            <span class="target">(${fmtN(submitsA)} of ${fmtN(leadACh)})</span>
+      let stRows='';
+      STAGES.forEach(st=>{
+        const a=ctx.ACT_CH[st][0], t=ytdTgtCh(st,0), s=statusOf(a,t);
+        const bw=t>0?Math.min(Math.round(a/t*100),130):0;
+        stRows+=`<div class="stage-row">
+          <div class="s-name">${st}</div>
+          <div class="s-bar-wrap"><div class="s-bar" style="width:${bw}%;background:${barCol(s)}"></div></div>
+          <div class="s-nums">${fmtN(a)} / ${fmtN(t)}</div>
+          <div class="s-chip">${chip(a,t)}</div>
+        </div>`;
+      });
+
+      inner+=`<div class="ch-card-body" style="padding:12px 18px">${stRows}
+        <div class="conv-footer">
+          <div class="conv-item">
+            <div class="ci-label">Leads → App Submits</div>
+            <div class="ci-vals">
+              <span class="ci-act" style="color:${c(l2sSt)}">${(l2s*100).toFixed(1)}%</span>
+              <span class="ci-abs">${fmtN(sub)} of ${fmtN(leadACh)}</span>
+            </div>
+            <div class="ci-tgt">Target: ${(PERF.leadsToSubmitTgt*100).toFixed(0)}% · ${fmtN(Math.round(leadACh*PERF.leadsToSubmitTgt))} expected</div>
           </div>
-          <div style="font-size:10px;color:#bbb;margin-top:2px">Target: ${l2sTgtPct}% · ${fmtN(l2sAbsT)} expected</div>
-        </div>
-        <div class="cost-item">
-          <div class="lbl">App Submits → Offers</div>
-          <div class="vals">
-            <span class="actual" style="color:${c(s2oStatus)}">${s2oActPct}%</span>
-            <span class="target">(${fmtN(offersA)} of ${fmtN(submitsA)})</span>
+          <div class="conv-item">
+            <div class="ci-label">App Submits → Offers</div>
+            <div class="ci-vals">
+              <span class="ci-act" style="color:${c(s2oSt)}">${(s2o*100).toFixed(1)}%</span>
+              <span class="ci-abs">${fmtN(off)} of ${fmtN(sub)}</span>
+            </div>
+            <div class="ci-tgt">Target: ${(PERF.submitsToOffersTgt*100).toFixed(0)}% · ${fmtN(Math.round(sub*PERF.submitsToOffersTgt))} expected</div>
           </div>
-          <div style="font-size:10px;color:#bbb;margin-top:2px">Target: ${s2oTgtPct}% · ${fmtN(s2oAbsT)} expected</div>
         </div>
       </div>`;
+
+    /* ── Influencer: funnel + CPL + CAC ── */
+    } else if(mode==='cpl_cac'){
+      const cplR=ctx.CPL_T[ci]>0?ctx.CPL_A[ci]/ctx.CPL_T[ci]:1;
+      const cacR=ctx.CAC_T[ci]>0?ctx.CAC_A[ci]/ctx.CAC_T[ci]:1;
+      const cplC=barCol(cplR<=1.05?'on':cplR<=1.20?'beh':'risk');
+      const cacC=barCol(cacR<=1.05?'on':cacR<=1.20?'beh':'risk');
+      let fRows='';
+      STAGES.forEach((st,si)=>{
+        const a=ctx.ACT_CH[st][ci], prev=si>0?ctx.ACT_CH[STAGES[si-1]][ci]:null;
+        const bw=leadACh>0?Math.round(a/leadACh*100):0;
+        const convStr=prev&&prev>0?`${Math.round(a/prev*100)}%`:'';
+        fRows+=`<div class="f-row">
+          <div class="f-name">${st}</div>
+          <div class="f-bar-wrap"><div class="f-bar" style="width:${bw}%;background:${color}"></div></div>
+          <div class="f-count">${fmtN(a)}</div>
+          <div class="f-pct">${convStr}</div>
+        </div>`;
+      });
+      inner+=`<div class="ch-card-body" style="padding:12px 18px">${fRows}
+        <div class="cost-footer">
+          <div class="cost-tile">
+            <div class="ct-label">CPL (USD)</div>
+            <div class="ct-val" style="color:${cplC}">${fmtU(ctx.CPL_A[ci])}</div>
+            <div class="ct-sub">${Math.round(cplR*100)}% of target</div>
+            <div class="ct-tgt">Target: ${fmtU(ctx.CPL_T[ci])}</div>
+          </div>
+          <div class="cost-tile">
+            <div class="ct-label">CAC (USD)</div>
+            <div class="ct-val" style="color:${cacC}">${fmtU(ctx.CAC_A[ci])}</div>
+            <div class="ct-sub">${Math.round(cacR*100)}% of target</div>
+            <div class="ct-tgt">Target: ${fmtU(ctx.CAC_T[ci])}</div>
+          </div>
+        </div>
+      </div>`;
+
+    /* ── B2B: funnel + CAC ── */
+    } else if(mode==='cac'){
+      const cacR=ctx.CAC_T[ci]>0?ctx.CAC_A[ci]/ctx.CAC_T[ci]:1;
+      const cacC=barCol(cacR<=1.05?'on':cacR<=1.20?'beh':'risk');
+      let fRows='';
+      STAGES.forEach((st,si)=>{
+        const a=ctx.ACT_CH[st][ci], prev=si>0?ctx.ACT_CH[STAGES[si-1]][ci]:null;
+        const bw=leadACh>0?Math.round(a/leadACh*100):0;
+        const convStr=prev&&prev>0?`${Math.round(a/prev*100)}%`:'';
+        fRows+=`<div class="f-row">
+          <div class="f-name">${st}</div>
+          <div class="f-bar-wrap"><div class="f-bar" style="width:${bw}%;background:${color}"></div></div>
+          <div class="f-count">${fmtN(a)}</div>
+          <div class="f-pct">${convStr}</div>
+        </div>`;
+      });
+      inner+=`<div class="ch-card-body" style="padding:12px 18px">${fRows}
+        <div class="cost-footer">
+          <div class="cost-tile" style="max-width:160px">
+            <div class="ct-label">CAC (USD)</div>
+            <div class="ct-val" style="color:${cacC}">${fmtU(ctx.CAC_A[ci])}</div>
+            <div class="ct-sub">${Math.round(cacR*100)}% of target</div>
+            <div class="ct-tgt">Target: ${fmtU(ctx.CAC_T[ci])}</div>
+          </div>
+        </div>
+      </div>`;
+
+    /* ── Simple: funnel only ── */
+    } else {
+      let fRows='';
+      STAGES.forEach((st,si)=>{
+        const a=ctx.ACT_CH[st][ci], prev=si>0?ctx.ACT_CH[STAGES[si-1]][ci]:null;
+        const bw=leadACh>0?Math.round(a/leadACh*100):0;
+        const convStr=prev&&prev>0?`${Math.round(a/prev*100)}%`:'';
+        fRows+=`<div class="f-row">
+          <div class="f-name">${st}</div>
+          <div class="f-bar-wrap"><div class="f-bar" style="width:${bw}%;background:${color}"></div></div>
+          <div class="f-count">${fmtN(a)}</div>
+          <div class="f-pct">${convStr}</div>
+        </div>`;
+      });
+      inner+=`<div class="ch-card-body" style="padding:12px 18px">${fRows}</div>`;
     }
 
-    let stageHtml = '';
-    STAGES.forEach(st => {
-      const a = ctx.ACT_CH[st][ci], t = ytdTgtCh(st, ci);
-      const s = statusOf(a, t);
-      const bw = t>0 ? Math.min(Math.round(a/t*100),130) : 0;
-      stageHtml += `<div class="stage-row">
-        <div class="s-name">${st}</div>
-        <div class="s-bar-wrap"><div class="s-bar" style="width:${bw}%;background:${barCol(s)}"></div></div>
-        <div class="s-nums">${fmtN(a)} / ${fmtN(t)}</div>
-        <div class="s-chip">${chip(a,t)}</div>
-      </div>`;
-    });
-
-    const cplRatioCh = ctx.CPL_T[ci]>0 ? ctx.CPL_A[ci]/ctx.CPL_T[ci] : 1;
-    const cplColor   = barCol(ctx.CPL_T[ci]>0?(cplRatioCh<=1.05?'on':cplRatioCh<=1.20?'beh':'risk'):null);
-    const cacRatioCh = ctx.CAC_T[ci]>0 ? ctx.CAC_A[ci]/ctx.CAC_T[ci] : 1;
-    const cacColor   = barCol(ctx.CAC_T[ci]>0?(cacRatioCh<=1.05?'on':cacRatioCh<=1.20?'beh':'risk'):null);
-
-    html += `<div class="ch-card">
-      <div class="ch-card-head">
-        <div class="name">${ch}</div>
+    html+=`<div class="ch-card">
+      <div class="ch-head">
+        <div class="ch-name">${ch}</div>
         <div class="ch-kpis">
-          <div class="ch-kpi">
-            <div class="lbl">Leads YTD</div>
-            <div class="val">${fmtN(leadACh)}</div>
-          </div>
-          <div class="ch-kpi">
-            <div class="lbl">Admits YTD</div>
-            <div class="val" style="color:${admColor}">${fmtN(admACh)}</div>
-          </div>
+          <div class="ch-kpi"><div class="lbl">Leads YTD</div><div class="val">${fmtN(leadACh)}</div></div>
+          <div class="ch-kpi"><div class="lbl">Admits YTD</div><div class="val" style="color:${admColor}">${fmtN(admACh)}</div></div>
         </div>
       </div>
-      ${perfMetrics}
-      <div class="ch-card-body">
-        ${stageHtml}
-        ${ci === 0
-          ? (window._perfFooter || '')
-          : `<div class="cost-row-ch">
-          <div class="cost-item">
-            <div class="lbl">CPL (USD)</div>
-            <div class="vals">
-              <span class="actual" style="color:${cplColor}">${fmtU(ctx.CPL_A[ci])}</span>
-              <span class="target">/ ${fmtU(ctx.CPL_T[ci])}</span>
-            </div>
-          </div>
-          <div class="cost-item">
-            <div class="lbl">CAC (USD)</div>
-            <div class="vals">
-              <span class="actual" style="color:${cacColor}">${fmtU(ctx.CAC_A[ci])}</span>
-              <span class="target">/ ${fmtU(ctx.CAC_T[ci])}</span>
-            </div>
-          </div>
-        </div>`}
-      </div>
+      ${inner}
     </div>`;
   });
-  document.getElementById('channels-grid').innerHTML = html;
+  document.getElementById('channels-grid').innerHTML=html;
+
+  /* ── Region section ── */
+  const reg=ctx.regions;
+  const maxL=Math.max(...reg.leads.map(r=>r.count));
+  const maxA=Math.max(...reg.admits.map(r=>r.count));
+  const totalL=reg.leads.reduce((s,r)=>s+r.count,0);
+  const totalA=reg.admits.reduce((s,r)=>s+r.count,0);
+
+  const leadsHtml=reg.leads.map(r=>{
+    if(r.count===0) return '';
+    const bar=Math.round(r.count/maxL*100), p=totalL>0?Math.round(r.count/totalL*100):0;
+    return `<div class="rr">
+      <div class="r-name">${r.name}</div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:${bar}%;background:#4a90d9"></div></div>
+      <div class="r-stat">${fmtN(r.count)}</div>
+      <div class="r-pct">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const admitsHtml=reg.admits.map(r=>{
+    if(r.count===0) return '';
+    const bar=Math.round(r.count/maxA*100), p=totalA>0?Math.round(r.count/totalA*100):0;
+    return `<div class="rr">
+      <div class="r-name">${r.name}</div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:${bar}%;background:#27ae60"></div></div>
+      <div class="r-stat">${fmtN(r.count)}</div>
+      <div class="r-pct">${p}%</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('region-grid').innerHTML=`
+    <div class="region-panel">
+      <h4>Lead Sources by Region <span style="font-weight:400;color:#aaa;font-size:11px">${fmtN(totalL)} total</span></h4>
+      ${leadsHtml}
+    </div>
+    <div class="region-panel">
+      <h4>Enrolled Students by Region <span style="font-weight:400;color:#aaa;font-size:11px">${fmtN(totalA)} total</span></h4>
+      ${admitsHtml}
+    </div>`;
 }
 
-/* ── TAB SWITCHING ── */
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     renderDashboard(btn.dataset.prog);
   });
 });
-
-/* ── INITIAL RENDER ── */
 renderDashboard('overall');
 </script>
 </body>
